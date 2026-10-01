@@ -7,6 +7,7 @@
 
 export const BIZ = {
   name: "Lumi Hospital",
+  crmUrl: import.meta.env?.VITE_CRM_URL || "",
   short: "Lumi",
   tagline: "Towards Healthy Life",
   intro: "A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock.",

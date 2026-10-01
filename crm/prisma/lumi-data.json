@@ -1,0 +1,350 @@
+{
+  "syncedAt": "2026-10-01T08:07:12.898Z",
+  "biz": {
+    "name": "Lumi Hospital",
+    "short": "Lumi",
+    "tagline": "Towards Healthy Life",
+    "intro": "A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock.",
+    "phone": "+91 00000 00000",
+    "emergency": "+91 00000 00001",
+    "email": "care@lumihospital.in",
+    "address": "Address line, Area, City, State PIN",
+    "mapQuery": "Lumi Hospital",
+    "hours": {
+      "opd": "Mon–Sat · 8:00 AM – 8:00 PM",
+      "sunday": "Sun · 9:00 AM – 1:00 PM",
+      "visiting": "11:00 AM – 1:00 PM · 5:00 PM – 7:00 PM",
+      "pharmacy": "24 hours",
+      "lab": "24 hours"
+    },
+    "siteUrl": "https://www.lumihospital.in"
+  },
+  "departments": [
+    {
+      "id": "cardiology",
+      "name": "Cardiology",
+      "summary": "Heart checks, cardiac imaging, interventions and rehab.",
+      "about": "From a first ECG to complex angioplasty, our cardiac team covers prevention, diagnosis, intervention and long-term heart care, with an ICU and emergency team on call day and night."
+    },
+    {
+      "id": "neurology",
+      "name": "Neurology",
+      "summary": "Stroke, epilepsy, headache and nerve disorders.",
+      "about": "Rapid emergency assessment, an epilepsy clinic and neuro-diagnostics help us find the cause quickly and start treatment while it matters most."
+    },
+    {
+      "id": "orthopaedics",
+      "name": "Orthopaedics",
+      "summary": "Joint replacement, sports injuries, spine and trauma.",
+      "about": "Joint replacement, arthroscopy and spine surgery, supported by in-house physiotherapy so recovery starts the day after surgery."
+    },
+    {
+      "id": "obgyn",
+      "name": "Obstetrics & Gynaecology",
+      "summary": "Pregnancy, safe birth and lifelong women's health.",
+      "about": "A Neonatal ICU in the same building and a team that stays with you from the first scan to the first vaccination."
+    },
+    {
+      "id": "paediatrics",
+      "name": "Paediatrics & NICU",
+      "summary": "Newborn intensive care, child health and vaccinations.",
+      "about": "Child-friendly consultation rooms, a well-baby clinic and a fully equipped NICU for the smallest patients."
+    },
+    {
+      "id": "general-medicine",
+      "name": "Internal Medicine",
+      "summary": "Adult medicine, diabetes, BP and preventive care.",
+      "about": "Your first stop for undiagnosed symptoms, long-term conditions and coordinated care across specialities."
+    },
+    {
+      "id": "pulmonology",
+      "name": "Pulmonology",
+      "summary": "Asthma, COPD, sleep and lung function.",
+      "about": "Lung function testing and respiratory care, with ICU support when breathing gets serious."
+    },
+    {
+      "id": "nephro-uro",
+      "name": "Nephrology & Urology",
+      "summary": "Kidney care, dialysis, stones and prostate.",
+      "about": "Kidney care and minimally invasive urology for kidney stones and prostate conditions."
+    },
+    {
+      "id": "gastro",
+      "name": "Gastroenterology",
+      "summary": "Digestive, liver and endoscopy services.",
+      "about": "Diagnostic and therapeutic endoscopy, liver clinics and day-care procedures, so you're usually home the same day."
+    },
+    {
+      "id": "diagnostics",
+      "name": "Diagnostics & Imaging",
+      "summary": "24/7 lab, CT, MRI, X-ray and ultrasound.",
+      "about": "An in-house laboratory and imaging with digital reports, often on your phone within hours."
+    }
+  ],
+  "doctors": [
+    {
+      "id": "arjun-rao",
+      "name": "Dr. Arjun Rao",
+      "dept": "cardiology",
+      "role": "Senior Consultant, Interventional Cardiology",
+      "quals": "MBBS, MD, DM (Cardiology)",
+      "exp": 18,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "10 AM – 4 PM"
+    },
+    {
+      "id": "meera-iyer",
+      "name": "Dr. Meera Iyer",
+      "dept": "neurology",
+      "role": "Consultant Neurologist",
+      "quals": "MBBS, MD, DM (Neurology)",
+      "exp": 12,
+      "days": [
+        "Mon",
+        "Wed",
+        "Fri"
+      ],
+      "time": "9 AM – 2 PM"
+    },
+    {
+      "id": "faisal-khan",
+      "name": "Dr. Faisal Khan",
+      "dept": "orthopaedics",
+      "role": "Head, Orthopaedics & Joint Replacement",
+      "quals": "MBBS, MS (Ortho), Fellowship in Arthroplasty",
+      "exp": 20,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "10 AM – 5 PM"
+    },
+    {
+      "id": "kavitha-reddy",
+      "name": "Dr. Kavitha Reddy",
+      "dept": "obgyn",
+      "role": "Senior Consultant, Obstetrics & Gynaecology",
+      "quals": "MBBS, MS (OBG), DNB",
+      "exp": 16,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "9 AM – 1 PM"
+    },
+    {
+      "id": "priya-shetty",
+      "name": "Dr. Priya Shetty",
+      "dept": "paediatrics",
+      "role": "Consultant Paediatrician & Neonatologist",
+      "quals": "MBBS, MD (Paediatrics), Fellowship in Neonatology",
+      "exp": 10,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "10 AM – 6 PM"
+    },
+    {
+      "id": "sanjay-menon",
+      "name": "Dr. Sanjay Menon",
+      "dept": "general-medicine",
+      "role": "Consultant, Internal Medicine & Diabetology",
+      "quals": "MBBS, MD (Medicine)",
+      "exp": 14,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "9 AM – 5 PM"
+    },
+    {
+      "id": "ayesha-siddiqui",
+      "name": "Dr. Ayesha Siddiqui",
+      "dept": "pulmonology",
+      "role": "Consultant Pulmonologist",
+      "quals": "MBBS, MD (Pulmonary Medicine)",
+      "exp": 9,
+      "days": [
+        "Tue",
+        "Thu",
+        "Sat"
+      ],
+      "time": "10 AM – 3 PM"
+    },
+    {
+      "id": "rahul-deshpande",
+      "name": "Dr. Rahul Deshpande",
+      "dept": "nephro-uro",
+      "role": "Consultant Nephrologist",
+      "quals": "MBBS, MD, DM (Nephrology)",
+      "exp": 11,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri"
+      ],
+      "time": "11 AM – 5 PM"
+    },
+    {
+      "id": "nikhil-varma",
+      "name": "Dr. Nikhil Varma",
+      "dept": "gastro",
+      "role": "Consultant Gastroenterologist",
+      "quals": "MBBS, MD, DM (Gastroenterology)",
+      "exp": 13,
+      "days": [
+        "Mon",
+        "Wed",
+        "Thu",
+        "Sat"
+      ],
+      "time": "10 AM – 4 PM"
+    },
+    {
+      "id": "lakshmi-narayan",
+      "name": "Dr. Lakshmi Narayan",
+      "dept": "diagnostics",
+      "role": "Head, Radiology",
+      "quals": "MBBS, MD (Radiodiagnosis)",
+      "exp": 15,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "8 AM – 4 PM"
+    },
+    {
+      "id": "vikram-joshi",
+      "name": "Dr. Vikram Joshi",
+      "dept": "cardiology",
+      "role": "Consultant Cardiologist",
+      "quals": "MBBS, MD, DNB (Cardiology)",
+      "exp": 8,
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "4 PM – 8 PM"
+    },
+    {
+      "id": "imran-pasha",
+      "name": "Dr. Imran Pasha",
+      "dept": "orthopaedics",
+      "role": "Consultant, Spine & Sports Medicine",
+      "quals": "MBBS, MS (Ortho), Fellowship in Spine Surgery",
+      "exp": 9,
+      "days": [
+        "Mon",
+        "Tue",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "time": "11 AM – 6 PM"
+    }
+  ],
+  "packages": [
+    {
+      "id": "essential",
+      "name": "Essential",
+      "price": 1499,
+      "tests": 34,
+      "for": "Adults under 35 · yearly baseline"
+    },
+    {
+      "id": "executive",
+      "name": "Executive",
+      "price": 3999,
+      "tests": 70,
+      "for": "Working professionals 35+"
+    },
+    {
+      "id": "heart",
+      "name": "Heart Plus",
+      "price": 5999,
+      "tests": 56,
+      "for": "Family history or heart-risk factors"
+    },
+    {
+      "id": "women",
+      "name": "Her Health",
+      "price": 4499,
+      "tests": 62,
+      "for": "Women 25+"
+    },
+    {
+      "id": "senior",
+      "name": "Silver Years",
+      "price": 4999,
+      "tests": 74,
+      "for": "Adults 60+"
+    },
+    {
+      "id": "diabetes",
+      "name": "Sugar Smart",
+      "price": 1999,
+      "tests": 28,
+      "for": "Diabetic or pre-diabetic"
+    }
+  ],
+  "faq": [
+    {
+      "q": "Do I need an appointment for the OPD?",
+      "a": "Walk-ins are welcome, but booked patients are seen first. Booking takes under a minute online or on WhatsApp."
+    },
+    {
+      "q": "Is cashless insurance available?",
+      "a": "Yes. We work with major insurers and TPAs. Bring your policy card and photo ID; our insurance desk handles pre-authorisation."
+    },
+    {
+      "q": "What should I bring for my first visit?",
+      "a": "A photo ID, previous prescriptions and reports, a list of current medicines and your insurance card if you have one."
+    },
+    {
+      "q": "How do I get my lab reports?",
+      "a": "Reports are sent to your registered mobile number and can be collected from the lab counter."
+    },
+    {
+      "q": "What are the visiting hours?",
+      "a": "General wards: 11 AM – 1 PM and 5 PM – 7 PM. ICU visits are limited to one attendant at set times; please ask the nursing station."
+    },
+    {
+      "q": "Is there parking?",
+      "a": "Yes, on-site parking is available for patients and visitors, with drop-off right at the emergency entrance."
+    }
+  ]
+}

@@ -1,10 +1,12 @@
 import { boot } from "../core.js";
 import { consentCheckbox } from "../consent.js";
 import "../../css/pages/appointment.css";
-import { BIZ, DEPARTMENTS, PACKAGES } from "../../data/site.js";
+import { BIZ, DEPARTMENTS, PACKAGES, DOCTORS } from "../../data/site.js";
 import { $, $$, esc, tel, wa, params, deptById, doctorById, doctorsIn, initials, inr, icon, btn, media } from "../render.js";
 import { gsap } from "../motion.js";
 import { motionAllowed } from "../theme.js";
+import { crmEnabled, loadCatalog, getSlots, book } from "../crm.js";
+import { formMessage } from "../forms.js";
 
 /* ---------- Booking model ---------- */
 const WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -18,7 +20,13 @@ const SLOTS = [
 const CHECKUP = { id: "checkup", name: "Health check-up", icon: "flask", summary: "A preventive package. Pick the package in step 3." };
 const STEPS = ["Speciality", "Doctor & time", "Your details", "Review"];
 
-const state = { step: 1, max: 1, dept: "", doctor: "any", date: "", time: "" };
+const state = { step: 1, max: 1, dept: "", doctor: "any", date: "", time: "", cat: null, forceWa: false, assigned: null, fell: false, notice: "" };
+const dayCache = new Map();   // "doctor|date" -> Promise<{onLeave, reason, slots}> (live CRM availability)
+let tok = 0, stok = 0;    // invalidate stale day-prefetch / slot loads
+const IST = "Asia/Kolkata";
+const fmtTime = s => new Date(s).toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: IST }).toUpperCase();
+const fmtWhen = s => new Date(s).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: IST }).replace(/,/g, "") + " at " + fmtTime(s);
+const hourIST = s => +new Date(s).toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: IST }) % 24;
 
 /** "10 AM – 4 PM" → [10, 16] (null if unparseable). */
 function hoursOf(str) {
@@ -77,7 +85,11 @@ const stepTwo = () => `
   <fieldset class="wz-set"><legend class="wz-legend">Date <span class="muted" id="wz-month"></span></legend>
     <div class="days" id="days"></div>
     <p class="form-note" id="days-note"></p></fieldset>
-  <fieldset class="wz-set"><legend class="wz-legend">Time of day</legend><div class="slots" id="slots"></div></fieldset>
+  <input type="hidden" name="assigned" data-label="Doctor (matched)">
+  <fieldset class="wz-set" id="slots-set"><legend class="wz-legend" id="slots-lg">Time of day</legend>
+    <div id="pkg-pick" class="field pkg-pick" hidden><label for="ap-pkg2">Which health package?</label>
+      <select class="select" id="ap-pkg2"><option value="">Choose a package</option>${PACKAGES.map(p => `<option value="${p.id}">${esc(p.name)} · ${inr(p.price)}</option>`).join("")}</select></div>
+    <div class="slots" id="slots"></div><p class="sr-only" role="status" aria-live="polite" id="slots-live"></p></fieldset>
   <p class="wz-err" role="alert" hidden></p>
 </section>`;
 
@@ -90,6 +102,8 @@ const stepThree = () => `
       <input class="input" id="ap-name" name="name" data-label="Patient" autocomplete="name" required minlength="2"></div>
     <div class="field"><label for="ap-mobile">Mobile number <span class="req">*</span></label>
       <input class="input" id="ap-mobile" name="mobile" data-label="Mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="10-digit mobile" required pattern="[+]?[0-9\\s\\-]{10,16}"></div>
+    ${crmEnabled ? `<div class="field full"><label for="ap-email">Email <span class="muted">(optional, for your confirmation)</span></label>
+      <input class="input" id="ap-email" name="email" data-label="Email" type="email" autocomplete="email"></div>` : ""}
     <div class="field"><label for="ap-age">Age</label>
       <input class="input" id="ap-age" name="age" data-label="Age" type="number" inputmode="numeric" min="0" max="120"></div>
     <div class="field full"><label for="ap-gender">Gender</label>
@@ -117,11 +131,13 @@ const stepFour = () => `
     <p class="muted">Send the request on WhatsApp or by email. A coordinator will confirm the exact time.</p></header>
   <dl class="review" id="review"></dl>
   <div class="field full">${consentCheckbox("book and confirm my appointment")}</div>
+  <p class="crm-note" id="crm-note" role="alert" hidden></p>
   <div class="send-row">
-    <button class="btn btn--accent" type="submit"><span>Send on WhatsApp</span><span class="btn-ic">${icon("chat")}</span></button>
-    <button class="btn btn--line" type="button" data-send="email"><span>Send by email</span><span class="btn-ic">${icon("mail")}</span></button>
+    <button class="btn btn--accent" type="submit" id="wz-submit"><span>${crmEnabled ? "Confirm appointment" : "Send on WhatsApp"}</span>${crmEnabled ? "" : `<span class="btn-ic">${icon("chat")}</span>`}</button>
+    <button class="btn btn--line" type="button" id="crm-retry" hidden><span>Try again</span></button>
+    <button class="btn btn--line" type="button" data-send="email" ${crmEnabled ? "hidden" : ""}><span>Send by email</span><span class="btn-ic">${icon("mail")}</span></button>
   </div>
-  <p class="form-note">Nothing is stored on this website. Your request opens in your own WhatsApp or email app, addressed to ${esc(BIZ.name)}.</p>
+  <p class="form-note" id="wz-foot">${crmEnabled ? `Your details go to ${esc(BIZ.name)}'s booking system to reserve this slot, and are used only for your visit.` : `Nothing is stored on this website. Your request opens in your own WhatsApp or email app, addressed to ${esc(BIZ.name)}.`}</p>
 </section>`;
 
 const done = () => `
@@ -214,7 +230,8 @@ function renderDoctors() {
 }
 
 function renderDays() {
-  const { days } = availability();
+  const plan = crmPlan();
+  const days = plan ? new Set(WEEK) : availability().days;
   const list = nextDays();
   if (state.date && !days.has(WEEK[new Date(state.date + "T00:00:00").getDay()])) state.date = "";
   const months = [...new Set(list.map(d => `${MONTHS[d.getMonth()]} ${d.getFullYear()}`))];
@@ -228,18 +245,130 @@ function renderDays() {
       <span class="day-w">${dayName(d, i)}</span><span class="day-d">${d.getDate()}</span><span class="day-m">${d.getDate() === 1 || i === 0 ? MONTHS[d.getMonth()] : "&nbsp;"}</span>
     </label>`;
   }).join("");
+  if (plan) {
+    $("#days-note").textContent = plan.needPkg ? "" : "Free times are checked live. Days with nothing available are greyed out as we check them.";
+    if (!plan.needPkg) prefetch(plan);
+    return renderSlots();
+  }
   const offCount = list.filter(d => !days.has(WEEK[d.getDay()])).length;
   const who = state.dept === CHECKUP.id ? "Check-ups run" : state.doctor === "any" ? "This speciality runs" : (doctorById(state.doctor)?.name || "This doctor") + " sees patients";
   const order = WEEK.slice(1).concat("Sun").filter(x => days.has(x));
-  $("#days-note").textContent = offCount ? `${who} on ${order.length === 6 && !days.has("Sun") ? "Mon–Sat" : order.join(", ")}. Other days are greyed out.` : "";
+  $("#days-note").textContent = state.notice || (offCount ? `${who} on ${order.length === 6 && !days.has("Sun") ? "Mon–Sat" : order.join(", ")}. Other days are greyed out.` : "");
   renderSlots();
 }
 
+/* ---------- Live CRM availability ---------- */
+const pkgId = () => $("#ap-pkg")?.value || "";
+const dkey = (slug, date) => slug + "|" + date;
+
+/** null -> static (WhatsApp/email) flow. Otherwise {service, cands, needPkg}. */
+function crmPlan() {
+  const c = state.cat;
+  if (!crmEnabled || !c?.ok || state.forceWa || !state.dept) return null;
+  const check = state.dept === CHECKUP.id;
+  const service = check ? (pkgId() ? "pkg-" + pkgId() : "") : state.dept;
+  if (service && !c.svc.has(service)) return null;
+  const pool = check ? DOCTORS : state.doctor === "any" ? doctorsIn(state.dept) : [doctorById(state.doctor)].filter(Boolean);
+  const cands = pool.filter(d => c.doc.has(d.id));
+  if (!cands.length) return null;
+  return { service, cands, needPkg: !service };
+}
+const liveBooking = () => !state.fell && !!crmPlan() && !!state.assigned && /^\d{4}-/.test(state.time);
+const docName = id => doctorById(id)?.name || "";
+
+function slotsFor(slug, date) {
+  const k = dkey(slug, date);
+  if (!dayCache.has(k)) { const p = getSlots(slug, date); p.catch(() => dayCache.delete(k)); dayCache.set(k, p); }
+  return dayCache.get(k);
+}
+/** First candidate doctor with free slots on that date. */
+async function resolveDay(plan, date) {
+  const rs = await Promise.all(plan.cands.map(d => slotsFor(d.id, date).then(r => ({ d, r: { ...r, slots: r.slots.filter(x => new Date(x) > new Date()) } }))));
+  const hit = rs.find(x => x.r.slots.length);
+  if (hit) return { doc: hit.d, slots: hit.r.slots };
+  return { doc: null, slots: [], onLeave: rs.every(x => x.r.onLeave), reason: rs.length === 1 ? rs[0].r.reason : null };
+}
+
+function markDay(date, r) {
+  const input = $(`#days input[data-iso="${date}"]`);
+  if (!input || r.slots.length) return;
+  const lab = input.closest(".day"), why = r.onLeave ? "on leave" : "no free times";
+  lab.classList.add("is-off"); input.disabled = true; lab.title = r.onLeave ? "Doctor on leave" : "No free times";
+  input.setAttribute("aria-label", input.getAttribute("aria-label") + ", " + why);
+  if (input.checked) { input.checked = false; state.date = ""; state.time = ""; syncSummary(); }
+}
+
+async function prefetch(plan) {
+  if (plan.cands.length > 3) return;       // keep request volume low for wide pools
+  const t = ++tok, list = nextDays().map(iso);
+  let i = 0;
+  const worker = async () => {
+    while (i < list.length && t === tok) {
+      const d = list[i++];
+      try { const r = await resolveDay(plan, d); if (t === tok) markDay(d, r); } catch { /* stays unknown */ }
+    }
+  };
+  await Promise.all([worker(), worker(), worker()]);
+}
+
+function renderLive(plan) {
+  const box = $("#slots"), live = $("#slots-live");
+  box.className = "slots slots--crm"; box.removeAttribute("aria-busy");
+  $("#slots-lg").textContent = "Available times";
+  const pick = $("#pkg-pick"); pick.hidden = state.dept !== CHECKUP.id;
+  if (!pick.hidden) $("#ap-pkg2").value = pkgId();
+  state.assigned = null; $('input[name="assigned"]').value = "";
+  const msg = t => { box.innerHTML = `<p class="slot-empty">${t}</p>`; syncSummary(); };
+  if (plan.needPkg) return msg("Choose a health package to see free times.");
+  if (!state.date) return msg("Choose a day to see free times.");
+  const t = ++stok, date = state.date;
+  box.setAttribute("aria-busy", "true");
+  box.innerHTML = `<div class="chips" aria-hidden="true">${Array.from({ length: 9 }, () => `<span class="chip sk">&nbsp;</span>`).join("")}</div>`;
+  live.textContent = "Loading available times.";
+  resolveDay(plan, date).then(r => {
+    if (t !== stok) return;
+    box.removeAttribute("aria-busy");
+    if (!r.slots.length) {
+      markDay(date, r);
+      const who = plan.cands.length === 1 ? docName(plan.cands[0].id) : "Our doctors";
+      const text = r.onLeave ? `${who} ${plan.cands.length === 1 ? "is" : "are"} on leave this day${r.reason ? " (" + r.reason + ")" : ""}. Please choose another day.` : "No free times on this day. Please choose another day.";
+      box.innerHTML = `<p class="slot-empty">${esc(text)}</p><p class="slot-alt"><button type="button" class="link" id="slot-alt">Prefer to send a request instead?</button></p>`;
+      live.textContent = text;
+      return syncSummary();
+    }
+    state.assigned = r.doc.id; $('input[name="assigned"]').value = r.doc.name;
+    if (!r.slots.includes(state.time)) state.time = "";
+    const groups = [["Morning", h => h < 12], ["Afternoon", h => h >= 12 && h < 16], ["Evening", h => h >= 16]];
+    const note = plan.cands.length > 1 ? `<p class="slot-note">With <b>${esc(r.doc.name)}</b>, the first doctor with free times this day.</p>` : "";
+    box.innerHTML = note + groups.map(([name, fn]) => {
+      const list = r.slots.filter(x => fn(hourIST(x)));
+      return list.length ? `<div class="slot-group" role="group" aria-label="${name}"><span class="label">${name}</span><div class="chips">${list.map(x => `
+        <label class="chip"><input class="opt-in" type="radio" name="time" value="${fmtTime(x)}" data-id="${x}" data-label="Preferred time" required ${state.time === x ? "checked" : ""}><span>${fmtTime(x)}</span></label>`).join("")}</div></div>` : "";
+    }).join("");
+    live.textContent = `${r.slots.length} free ${r.slots.length === 1 ? "time" : "times"} loaded.`;
+    syncSummary();
+  }).catch(() => {
+    if (t !== stok) return;
+    state.forceWa = true; state.notice = "We couldn't load live times just now. Choose a time of day and we'll confirm by WhatsApp or email.";
+    live.textContent = state.notice; renderDays();
+  });
+}
+
 function renderSlots() {
+  if (crmEnabled && !state.cat) {   // catalog still loading
+    $("#slots").className = "slots slots--crm";
+    $("#slots").innerHTML = `<div class="chips" aria-hidden="true">${Array.from({ length: 6 }, () => `<span class="chip sk">&nbsp;</span>`).join("")}</div>`;
+    return syncSummary();
+  }
+  const plan = crmPlan();
+  if (plan) return renderLive(plan);
+  state.assigned = null; $('input[name="assigned"]').value = "";
+  $("#slots").className = "slots"; $("#slots-lg").textContent = "Time of day"; $("#pkg-pick").hidden = true;
   const { ranges } = availability();
   const now = new Date(), isToday = state.date === iso(now);
   const ok = s => ranges.some(([a, b]) => a < s.to && b > s.from) && !(isToday && now.getHours() >= s.to - 1);
-  if (state.time && !ok(SLOTS.find(s => s.id === state.time))) state.time = "";
+  const cur = SLOTS.find(s => s.id === state.time);
+  if (state.time && (!cur || !ok(cur))) state.time = "";
   $("#slots").innerHTML = SLOTS.map(s => {
     const off = !ok(s);
     return `<label class="slot ${off ? "is-off" : ""}">
@@ -253,7 +382,7 @@ function renderSlots() {
 function syncSummary() {
   const vals = {
     dept: checked("dept")?.value,
-    doctor: checked("doctor")?.value,
+    doctor: state.assigned ? docName(state.assigned) : checked("doctor")?.value,
     date: checked("date")?.value,
     time: checked("time")?.value
   };
@@ -273,7 +402,7 @@ function renderReview() {
   const pkg = PACKAGES.find(p => p.id === get("package"));
   const rows = [
     ["Speciality", checked("dept")?.value, 1],
-    ["Doctor", checked("doctor")?.value, 2],
+    ["Doctor", state.assigned ? docName(state.assigned) : checked("doctor")?.value, 2],
     ["Day", checked("date")?.value, 2],
     ["Time", checked("time")?.value, 2],
     ["Patient", [get("name"), get("age") && get("age") + " yrs", f.elements.namedItem("gender").value].filter(Boolean).join(" · "), 3],
@@ -293,7 +422,7 @@ function validate(step) {
   $$("[aria-invalid]", sec).forEach(el => el.removeAttribute("aria-invalid"));
   if (step === 1 && !checked("dept")) { msg = "Please choose a speciality to continue."; focusEl = $('input[name="dept"]', sec); }
   if (step === 2) {
-    const miss = [!checked("doctor") && "a doctor", !checked("date") && "a day", !checked("time") && "a time of day"].filter(Boolean);
+    const miss = [!checked("doctor") && "a doctor", !checked("date") && "a day", !checked("time") && (crmPlan() ? "a time" : "a time of day")].filter(Boolean);
     if (miss.length) {
       msg = `Please choose ${miss.join(", ").replace(/, ([^,]*)$/, " and $1")}.`;
       focusEl = !checked("doctor") ? $('input[name="doctor"]', sec) : !checked("date") ? $('input[name="date"]:not(:disabled)', sec) : $('input[name="time"]:not(:disabled)', sec);
@@ -321,7 +450,7 @@ function go(to, { focus = true } = {}) {
   if (to === from) return;
   if (to > from) { for (let s = from; s < to; s++) if (!validate(s)) { if (s !== from) go(s); return; } }
   state.step = to; state.max = Math.max(state.max, to);
-  if (to === 4) renderReview();
+  if (to === 4) { renderReview(); syncSend(); }
   const out = $(`.wz-step[data-step="${from}"]`), inn = $(`.wz-step[data-step="${to}"]`);
   const dir = to > from ? 1 : -1;
   const show = () => {
@@ -355,8 +484,10 @@ function bind() {
   const f = form();
   f.addEventListener("change", e => {
     const t = e.target;
-    if (t.name === "dept") { state.dept = t.dataset.id; renderDoctors(); }
-    else if (t.name === "doctor") { state.doctor = t.dataset.id; renderDays(); }
+    if (t.name === "dept") { state.dept = t.dataset.id; state.forceWa = false; state.notice = ""; state.time = ""; renderDoctors(); }
+    else if (t.name === "doctor") { state.doctor = t.dataset.id; state.forceWa = false; state.notice = ""; state.time = ""; renderDays(); }
+    else if (t.id === "ap-pkg2") { f.elements.namedItem("package").value = t.value; state.time = ""; renderDays(); }
+    else if (t.name === "package") { if (state.dept === CHECKUP.id) { state.time = ""; renderDays(); } }
     else if (t.name === "date") { state.date = t.dataset.iso; renderSlots(); }
     else if (t.name === "time") { state.time = t.dataset.id; syncSummary(); }
     const err = $(".wz-err", t.closest(".wz-step") || f);
@@ -369,7 +500,12 @@ function bind() {
   // Enter before the last step means "continue", never "send" (runs before forms.js' submit handler).
   f.addEventListener("submit", e => {
     if (state.step < STEPS.length) { e.preventDefault(); e.stopImmediatePropagation(); go(state.step + 1); }
+    else if (liveBooking()) { e.preventDefault(); e.stopImmediatePropagation(); confirmBooking(); }
   }, true);
+  f.addEventListener("click", e => {
+    if (e.target.closest("#slot-alt")) { state.forceWa = true; state.notice = "Choose a time of day and we'll confirm by WhatsApp or email."; renderDays(); }
+    if (e.target.closest("#crm-retry")) { state.fell = false; syncSend(); f.requestSubmit($("#wz-submit")); }
+  });
 }
 
 function prefill() {
@@ -389,10 +525,111 @@ function prefill() {
   $('.wz-step[data-step="1"]').hidden = true; $('.wz-step[data-step="2"]').hidden = false; state.step = 2;
 }
 
+/* ---------- Booking via CRM ---------- */
+const FOOT_LIVE = `Your details go to ${BIZ.name}'s booking system to reserve this slot, and are used only for your visit.`;
+const FOOT_WA = `Nothing is stored on this website. Your request opens in your own WhatsApp or email app, addressed to ${BIZ.name}.`;
+function syncSend() {
+  if (!crmEnabled) return;
+  const live = liveBooking();
+  $("#wz-submit span").textContent = live ? "Confirm appointment" : "Send on WhatsApp";
+  $('[data-send="email"]').hidden = live;
+  $("#crm-retry").hidden = !(state.fell && crmPlan() && state.assigned && /^\d{4}-/.test(state.time));
+  $("#wz-foot").textContent = live ? FOOT_LIVE : FOOT_WA;
+  $("#wz-h4 + p").textContent = live ? "Confirm to reserve this time. We'll show your appointment code straight away." : "Send the request on WhatsApp or by email. A coordinator will confirm the exact time.";
+}
+
+const nm = v => (typeof v === "string" ? v : v?.name) || "";
+function ics(code, doc, svc, when, mins) {
+  const st = d => new Date(d).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const esc = x => String(x).replace(/[\\;,]/g, m => "\\" + m).replace(/\n/g, "\\n");
+  const end = new Date(new Date(when).getTime() + (mins || 30) * 60000);
+  return ["BEGIN:VCALENDAR", "VERSION:2.0", `PRODID:-//${BIZ.name}//Booking//EN`, "BEGIN:VEVENT", `UID:${code}@lumi-booking`, `DTSTAMP:${st(new Date())}`,
+    `DTSTART:${st(when)}`, `DTEND:${st(end)}`, `SUMMARY:${esc(`${doc || "Appointment"} · ${BIZ.name}`)}`, `LOCATION:${esc(BIZ.address)}`,
+    `DESCRIPTION:${esc(`Booking code ${code}${svc ? ". " + svc : ""}`)}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+}
+
+function showConfirmed(res, ctx) {
+  const f = form(), d = $(".form-done", f);
+  const code = res.appointmentCode || "", when = res.scheduledAt || ctx.scheduledAt;
+  const doc = nm(res.doctor) || ctx.doc, svc = nm(res.service) || ctx.svc;
+  const fast = ctx.service.startsWith("pkg-");
+  d.innerHTML = `<span class="done-ic">${icon("check")}</span>
+    <h2 id="cf-h" tabindex="-1">Appointment confirmed.</h2>
+    <p class="lead">Your visit is booked. Keep this code handy, you'll need it at reception.</p>
+    <span class="cf-code" aria-label="Appointment code ${esc(code)}">${esc(code)}</span>
+    <dl class="cf-list">
+      <div><dt>Doctor</dt><dd>${esc(doc)}</dd></div>
+      <div><dt>For</dt><dd>${esc(svc)}</dd></div>
+      <div><dt>When</dt><dd>${esc(fmtWhen(when))}</dd></div>
+    </dl>
+    <span class="label">What to bring</span>
+    <ul class="cf-bring"><li>A photo ID</li><li>Past reports, scans and prescriptions</li><li>A list of the medicines you take</li>${fast ? "<li>Fasting for 10–12 hours, if your package needs it</li>" : ""}</ul>
+    <div class="btn-row">
+      <button class="btn btn--accent" type="button" id="cf-ics"><span>Add to calendar</span></button>
+      <button class="btn btn--line" type="button" id="cf-wa"><span>Also send details on WhatsApp</span></button>
+      ${btn("/appointment.html", "Book another visit", "line")}
+    </div>`;
+  $("#cf-ics").addEventListener("click", () => {
+    const a = document.createElement("a"), url = URL.createObjectURL(new Blob([ics(code, doc, svc, when, ctx.mins)], { type: "text/calendar" }));
+    a.href = url; a.download = `appointment-${code || "lumi"}.ics`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  $("#cf-wa").addEventListener("click", () => window.open(wa(`${formMessage(f)}\n\nBooking code: ${code}\nWhen: ${fmtWhen(when)}`), "_blank", "noopener"));
+  d.hidden = false;
+  $("#cf-h").focus({ preventScroll: true });
+  const top = f.getBoundingClientRect().top;
+  if (top < 0) window.__lenis ? window.__lenis.scrollTo(f, { offset: -110 }) : f.scrollIntoView({ block: "start" });
+}
+
+async function confirmBooking() {
+  const f = form();
+  if (!f.reportValidity()) return;
+  const plan = crmPlan(), b = $("#wz-submit"), lbl = $("span", b), note = $("#crm-note");
+  if (!plan) return;
+  const get = n => f.elements.namedItem(n)?.value?.trim() || "";
+  const full = get("name").replace(/\s+/g, " "), i = full.indexOf(" ");
+  const pkg = PACKAGES.find(p => p.id === get("package"));
+  const reason = [checked("visit")?.value, get("age") && "Age " + get("age"), pkg && "Package: " + pkg.name, get("notes")].filter(Boolean).join(". ");
+  const ctx = { service: plan.service, doc: docName(state.assigned), scheduledAt: state.time,
+    svc: pkg && plan.service.startsWith("pkg-") ? pkg.name : deptById(state.dept)?.name || state.cat.svc.get(plan.service)?.name || "",
+    mins: state.cat.svc.get(plan.service)?.durationMinutes };
+  const date = state.date, doctor = state.assigned;
+  note.hidden = true; b.disabled = true; b.setAttribute("aria-busy", "true"); lbl.textContent = "Confirming…";
+  try {
+    const res = await book({ serviceSlug: plan.service, doctorSlug: doctor, firstName: i < 0 ? full : full.slice(0, i), lastName: i < 0 ? "" : full.slice(i + 1),
+      phone: get("mobile").replace(/[\s-]/g, ""), email: get("email"), gender: { Female: "FEMALE", Male: "MALE", Other: "OTHER" }[get("gender")], scheduledAt: state.time, reason });
+    showConfirmed(res || {}, ctx);
+  } catch (e) {
+    const back = (step, text, els = []) => {
+      const err = $(`.wz-step[data-step="${step}"] .wz-err`); err.textContent = text; err.hidden = false;
+      els.forEach(el => el?.setAttribute("aria-invalid", "true"));
+      go(step);
+    };
+    if (e.kind === "conflict") {
+      dayCache.delete(dkey(doctor, date)); state.time = "";
+      renderDays();
+      back(2, "Sorry, that time was just taken by someone else. We've refreshed the free times, please choose another.");
+    } else if (e.kind === "invalid") {
+      const fl = e.fields || {}, m = { firstName: "name", lastName: "name", phone: "mobile", email: "email", gender: "gender" };
+      const hit = Object.keys(fl).filter(k => m[k]);
+      if (hit.length) back(3, hit.map(k => fl[k]).join(" "), hit.map(k => f.elements.namedItem(m[k])));
+      else back(2, "Please check the doctor, day and time, then try again.");
+    } else {
+      state.fell = true;
+      note.textContent = "We couldn't reach our booking system, so nothing has been booked yet. Your details are still here. You can try again, or send the request on WhatsApp or by email and our team will confirm.";
+      note.hidden = false;
+    }
+  } finally { b.disabled = false; b.removeAttribute("aria-busy"); syncSend(); }
+}
+
 boot(() => {
   $("main").innerHTML = page();
   bind();
   prefill();
   syncChrome();
   syncSummary();
+  if (crmEnabled) loadCatalog().then(c => {
+    state.cat = c;
+    if (c.ok) $(".ap-hero .lead").textContent = "Choose a speciality, a doctor and a free time, then confirm. You'll get your appointment code straight away.";
+    if (state.dept) renderDays();
+  });
 });

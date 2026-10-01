@@ -1,6 +1,11 @@
-node_modules
+
+!.env.example
+*.log
+.env
+.env.*
 .shots
+.vercel
+crm/.local-postgres-data
+node_modules
 raw
 raw-stock
-.vercel
-*.log

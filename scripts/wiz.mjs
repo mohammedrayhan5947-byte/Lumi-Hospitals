@@ -1,0 +1,11 @@
+import puppeteer from "puppeteer-core";
+const b = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 1000 });
+const errs = []; p.on("pageerror", e => errs.push(e.message)); p.on("console", m => m.type() === "error" && errs.push(m.text()));
+const reqs = []; p.on("request", r => r.url().includes("localhost:3000") && reqs.push(r.method() + " " + r.url().replace("http://localhost:3000", "").slice(0, 70)));
+await p.evaluateOnNewDocument(() => { localStorage.setItem("lumi-theme", JSON.stringify({ mode: "light", a11y: ["calm"] })); localStorage.setItem("lumi-consent", JSON.stringify({ v: 1, necessary: true })); sessionStorage.setItem("lumi-pl", "1"); });
+await p.goto("http://localhost:5173/appointment.html?dept=cardiology&doctor=arjun-rao", { waitUntil: "networkidle0", timeout: 90000 });
+await new Promise(r => setTimeout(r, 2500));
+await p.screenshot({ path: ".shots/wiz-1.png" });
+console.log(reqs.join("\n")); console.log(errs.length ? "ERRORS: " + errs.slice(0, 4).join(" | ") : "no console errors");
+await b.close();
