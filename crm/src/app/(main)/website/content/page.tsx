@@ -9,7 +9,7 @@ export default async function WebsiteContentPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Site Content</h1>
         <p className="text-sm text-muted-foreground">
-          Clinic identity, timings, and homepage copy shown on the public website. Changes take effect immediately.
+          Clinic identity, timings, and homepage copy used inside the CRM (print headers, notifications). The public website reads its own data file (src/data/site.js).
         </p>
       </div>
       <ClinicSettingsForm settings={settings} />

@@ -368,3 +368,19 @@ html[data-mode="dark"] .pkg.is-featured .muted, html[data-mode="dark"] .pkg.is-f
 @media (hover: none) { .dept-card p { max-height: 6em; opacity: 1; margin-bottom: 10px; } }
 .feat { grid-template-columns: 1fr !important; }
 .hscroll { padding-block: 6px; }
+
+/* Touch targets: >=44px hit areas on phones/tablets without changing the look */
+@media (pointer: coarse) {
+  .footer-top ul { gap: 0; }
+  .footer-top ul a, .f-contact a { display: inline-flex; align-items: center; min-height: 44px; }
+  .f-contact li { align-items: center; }
+  .legal-nav { gap: 0 8px; }
+  .legal-nav a, .legal-nav .consent-open { display: inline-flex; align-items: center; min-height: 44px; padding-inline: 4px; }
+  .socials a { width: 48px; height: 48px; }
+  .chip { height: 44px; }
+  .crumbs a { display: inline-flex; align-items: center; min-height: 44px; }
+  .logo { min-height: 44px; }
+  .link { min-height: 44px; }
+  .mnav li a { min-height: 56px; }
+  .acc-btn { min-height: 56px; }
+}

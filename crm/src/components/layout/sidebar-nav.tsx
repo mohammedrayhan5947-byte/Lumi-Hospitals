@@ -107,7 +107,8 @@ const navGroups: NavGroup[] = [
   },
 ]
 
-export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
+/** Logo + navigation. Shared by the desktop sidebar and the mobile drawer. */
+export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavigate?: () => void }) {
   const pathname = usePathname()
   const isAdmin = role === "ADMIN"
 
@@ -120,7 +121,7 @@ export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
     .filter((group) => group.items.length > 0)
 
   return (
-    <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-background">
+    <>
       <div className="flex items-center gap-2 px-5 h-16 border-b shrink-0">
         <LumiMark className="h-9 w-9 shrink-0" />
         <LumiWordmark subtitle={role === "ADMIN" ? "Admin CRM" : "Reception Desk"} />
@@ -144,8 +145,9 @@ export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onNavigate}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-3 rounded-md px-3 py-3 lg:py-2 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -159,6 +161,14 @@ export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
           </div>
         ))}
       </nav>
+    </>
+  )
+}
+
+export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
+  return (
+    <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-background">
+      <NavPanel role={role} />
     </aside>
   )
 }

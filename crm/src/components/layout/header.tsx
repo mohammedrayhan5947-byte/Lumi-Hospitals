@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search, Plus } from "lucide-react"
+import { Search, Plus, Menu } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -15,12 +15,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { NavPanel } from "@/components/layout/sidebar-nav"
 import { initials } from "@/lib/format"
 import { logout } from "@/actions/auth"
 
 export function Header({ user }: { user: { name: string; role: string } }) {
   const router = useRouter()
   const [query, setQuery] = useState("")
+  const [menuOpen, setMenuOpen] = useState(false)
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -30,14 +33,28 @@ export function Header({ user }: { user: { name: string; role: string } }) {
   }
 
   return (
-    <header className="flex h-16 items-center gap-4 border-b bg-background px-4 lg:px-6">
+    <header className="flex h-16 items-center gap-2 border-b bg-background px-3 sm:gap-4 sm:px-4 lg:px-6">
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <button
+          type="button"
+          aria-label="Open menu"
+          onClick={() => setMenuOpen(true)}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md hover:bg-muted lg:hidden"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+        <SheetContent side="left" className="w-72 max-w-[85vw] gap-0 p-0 lg:hidden">
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+          <NavPanel role={user.role} onNavigate={() => setMenuOpen(false)} />
+        </SheetContent>
+      </Sheet>
       <form onSubmit={handleSearch} className="flex-1 max-w-xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search patients by name, UHID, phone… try tag:VIP or blood:O+"
+            placeholder="Search patients, UHID, phone…"
             className="pl-9"
           />
         </div>
@@ -50,7 +67,8 @@ export function Header({ user }: { user: { name: string; role: string } }) {
         render={
           <Link href="/patients/new">
             <Plus className="h-4 w-4" />
-            New Patient
+            <span className="hidden sm:inline">New Patient</span>
+            <span className="sr-only sm:hidden">New Patient</span>
           </Link>
         }
       />

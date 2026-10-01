@@ -1,0 +1,13 @@
+import puppeteer from "puppeteer-core";
+const b = await puppeteer.launch({ executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe", headless: true });
+const p = await b.newPage(); await p.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true });
+const errs = []; p.on("pageerror", e => errs.push(e.message));
+await p.goto("http://localhost:3000/login", { waitUntil: "networkidle0", timeout: 90000 });
+await p.type('input[type="email"],input[name="email"]', "admin@lumihospital.in"); await p.type('input[type="password"]', "v8FDyZ5OxYXE");
+await Promise.all([p.waitForNavigation({ waitUntil: "networkidle0" }).catch(() => {}), p.click('button[type="submit"]')]);
+await p.screenshot({ path: ".shots/m2-header.png" });
+await p.click('button[aria-label="Open menu"]'); await new Promise(r => setTimeout(r, 900));
+await p.screenshot({ path: ".shots/m2-drawer.png" });
+const link = await p.$('[role="dialog"] a[href="/appointments"]'); await link.click(); await new Promise(r => setTimeout(r, 2500));
+console.log("after click:", p.url(), "| drawer closed:", !(await p.$('[role="dialog"]')));
+console.log(errs.length ? errs.join("|") : "no errors"); await b.close();
