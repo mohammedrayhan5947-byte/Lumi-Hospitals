@@ -1,0 +1,31 @@
+/* ================= PATIENT RIGHTS ================= */
+@import "../legal.css";
+.lg-cta { margin-top: 22px; }
+.lg-doc:has(.pr-grid) { max-width: 920px; }
+.lg-doc:has(.pr-grid) > .lg-sec > :is(p, .lg-note, .lg-dl) { max-width: 74ch; }
+
+.pr-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line-2); }
+.pr-card { position: relative; display: grid; align-content: start; grid-template-columns: 48px 1fr; column-gap: 14px; padding: 22px 22px 22px 0; border-bottom: 1px solid var(--line-2); scroll-margin-top: calc(var(--header-h) + 24px); }
+.pr-card:nth-child(even) { padding-left: 22px; padding-right: 0; border-left: 1px solid var(--line-2); }
+.pr-n { grid-row: span 2; font-family: var(--f-serif); font-style: italic; font-size: 2rem; line-height: 1; color: var(--accent); }
+.pr-card h3 { margin: 2px 0 6px; font-size: 1.08rem; }
+.pr-card p { margin: 0; font-size: .95rem; line-height: 1.6; color: var(--muted); }
+.pr-card:target { background: var(--accent-soft); }
+
+.pr-resp { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: none; }
+.pr-resp li { display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 16px 0; border-top: 1px solid var(--line); }
+.pr-resp .num { font-family: var(--f-mono); font-size: .78rem; color: var(--accent); padding-top: 4px; }
+.pr-resp p { margin: 0; }
+
+.pr-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 18px 0 24px; }
+.pr-steps > div { padding: 18px; border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface); }
+.pr-steps h3 { margin: 8px 0 6px !important; font-size: 1.02rem !important; }
+.pr-steps p { margin: 0; font-size: .92rem; line-height: 1.55; color: var(--muted); }
+.pr-times { margin-bottom: 24px; }
+
+@media (max-width: 760px) {
+  .pr-grid, .pr-steps { grid-template-columns: 1fr; }
+  .pr-card:nth-child(even) { padding-left: 0; border-left: 0; }
+  .pr-card { padding-right: 0; }
+}
+@media (max-width: 520px) { .lg-cta .btn, .lg-sec .btn-row .btn { flex: 1 1 100%; justify-content: space-between; } }

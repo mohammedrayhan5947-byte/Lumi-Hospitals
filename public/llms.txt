@@ -1,0 +1,67 @@
+# Lumi Hospital
+
+> Lumi Hospital is a multi-speciality hospital in Bengaluru, Karnataka, India, with 10 specialities, 12 listed consultants, a 24/7 emergency room, ICU, NICU, laboratory and pharmacy. Patients can book consultations and preventive health check-ups online or on WhatsApp.
+
+A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock. Cashless insurance is accepted with insurers and TPAs including Star Health, HDFC ERGO, ICICI Lombard, Niva Bupa, Care Health, Aditya Birla, Bajaj Allianz, Tata AIG, Medi Assist (TPA), CGHS, ECHS.
+
+## Contact
+- Location: Bengaluru, Karnataka, India
+- Email: care@lumihospital.in
+- OPD hours: Mon–Sat · 8:00 AM – 8:00 PM; Sun · 9:00 AM – 1:00 PM
+- Emergency, ICU, pharmacy and laboratory: open 24 hours
+- Ward visiting hours: 11:00 AM – 1:00 PM · 5:00 PM – 7:00 PM
+- Book an appointment: https://www.lumihospital.in/appointment.html
+
+## Specialities
+- [Cardiology](https://www.lumihospital.in/specialities/cardiology.html): Heart checks, cardiac imaging, interventions and rehab.
+- [Neurology](https://www.lumihospital.in/specialities/neurology.html): Stroke, epilepsy, headache and nerve disorders.
+- [Orthopaedics](https://www.lumihospital.in/specialities/orthopaedics.html): Joint replacement, sports injuries, spine and trauma.
+- [Obstetrics & Gynaecology](https://www.lumihospital.in/specialities/obgyn.html): Pregnancy, safe birth and lifelong women's health.
+- [Paediatrics & NICU](https://www.lumihospital.in/specialities/paediatrics.html): Newborn intensive care, child health and vaccinations.
+- [Internal Medicine](https://www.lumihospital.in/specialities/general-medicine.html): Adult medicine, diabetes, BP and preventive care.
+- [Pulmonology](https://www.lumihospital.in/specialities/pulmonology.html): Asthma, COPD, sleep and lung function.
+- [Nephrology & Urology](https://www.lumihospital.in/specialities/nephro-uro.html): Kidney care, dialysis, stones and prostate.
+- [Gastroenterology](https://www.lumihospital.in/specialities/gastro.html): Digestive, liver and endoscopy services.
+- [Diagnostics & Imaging](https://www.lumihospital.in/specialities/diagnostics.html): 24/7 lab, CT, MRI, X-ray and ultrasound.
+
+## Doctors
+- [Dr. Arjun Rao](https://www.lumihospital.in/doctors/arjun-rao.html): Senior Consultant, Interventional Cardiology (MBBS, MD, DM (Cardiology)), 18+ years. OPD Mon–Sat, 10 AM – 4 PM.
+- [Dr. Meera Iyer](https://www.lumihospital.in/doctors/meera-iyer.html): Consultant Neurologist (MBBS, MD, DM (Neurology)), 12+ years. OPD Mon, Wed, Fri, 9 AM – 2 PM.
+- [Dr. Faisal Khan](https://www.lumihospital.in/doctors/faisal-khan.html): Head, Orthopaedics & Joint Replacement (MBBS, MS (Ortho), Fellowship in Arthroplasty), 20+ years. OPD Mon–Sat, 10 AM – 5 PM.
+- [Dr. Kavitha Reddy](https://www.lumihospital.in/doctors/kavitha-reddy.html): Senior Consultant, Obstetrics & Gynaecology (MBBS, MS (OBG), DNB), 16+ years. OPD Mon–Sat, 9 AM – 1 PM.
+- [Dr. Priya Shetty](https://www.lumihospital.in/doctors/priya-shetty.html): Consultant Paediatrician & Neonatologist (MBBS, MD (Paediatrics), Fellowship in Neonatology), 10+ years. OPD Mon–Sat, 10 AM – 6 PM.
+- [Dr. Sanjay Menon](https://www.lumihospital.in/doctors/sanjay-menon.html): Consultant, Internal Medicine & Diabetology (MBBS, MD (Medicine)), 14+ years. OPD Mon–Sat, 9 AM – 5 PM.
+- [Dr. Ayesha Siddiqui](https://www.lumihospital.in/doctors/ayesha-siddiqui.html): Consultant Pulmonologist (MBBS, MD (Pulmonary Medicine)), 9+ years. OPD Tue, Thu, Sat, 10 AM – 3 PM.
+- [Dr. Rahul Deshpande](https://www.lumihospital.in/doctors/rahul-deshpande.html): Consultant Nephrologist (MBBS, MD, DM (Nephrology)), 11+ years. OPD Mon, Tue, Wed, Thu, Fri, 11 AM – 5 PM.
+- [Dr. Nikhil Varma](https://www.lumihospital.in/doctors/nikhil-varma.html): Consultant Gastroenterologist (MBBS, MD, DM (Gastroenterology)), 13+ years. OPD Mon, Wed, Thu, Sat, 10 AM – 4 PM.
+- [Dr. Lakshmi Narayan](https://www.lumihospital.in/doctors/lakshmi-narayan.html): Head, Radiology (MBBS, MD (Radiodiagnosis)), 15+ years. OPD Mon–Sat, 8 AM – 4 PM.
+- [Dr. Vikram Joshi](https://www.lumihospital.in/doctors/vikram-joshi.html): Consultant Cardiologist (MBBS, MD, DNB (Cardiology)), 8+ years. OPD Mon–Sat, 4 PM – 8 PM.
+- [Dr. Imran Pasha](https://www.lumihospital.in/doctors/imran-pasha.html): Consultant, Spine & Sports Medicine (MBBS, MS (Ortho), Fellowship in Spine Surgery), 9+ years. OPD Mon, Tue, Thu, Fri, Sat, 11 AM – 6 PM.
+
+## Health check-up packages
+- [Essential](https://www.lumihospital.in/packages.html#essential): ₹1499 (34 tests). Adults under 35 · yearly baseline.
+- [Executive](https://www.lumihospital.in/packages.html#executive): ₹3999 (70 tests). Working professionals 35+.
+- [Heart Plus](https://www.lumihospital.in/packages.html#heart): ₹5999 (56 tests). Family history or heart-risk factors.
+- [Her Health](https://www.lumihospital.in/packages.html#women): ₹4499 (62 tests). Women 25+.
+- [Silver Years](https://www.lumihospital.in/packages.html#senior): ₹4999 (74 tests). Adults 60+.
+- [Sugar Smart](https://www.lumihospital.in/packages.html#diabetes): ₹1999 (28 tests). Diabetic or pre-diabetic.
+
+## Health journal
+- [Heart attack signs that don't look like heart attacks](https://www.lumihospital.in/journal/heart-attack-signs.html): Chest pain isn't always the first sign. What women, diabetics and older adults should watch for, and what to do in the first hour.
+- [Dengue, malaria or viral? Reading a monsoon fever](https://www.lumihospital.in/journal/monsoon-fevers.html): Monsoon fevers start the same way. When to get tested, which painkillers to avoid and the danger signs that need emergency care.
+- [Knee pain: when to move more and when to see a specialist](https://www.lumihospital.in/journal/knee-pain.html): Most knee pain improves with the right exercise. A few signs mean it's time for an orthopaedic opinion.
+- [Your first trimester, week by week](https://www.lumihospital.in/journal/pregnancy-first-trimester.html): Scans, supplements, food and the symptoms that are normal and the ones that aren't, in the first 12 weeks.
+- [The Indian diabetes plate, simplified](https://www.lumihospital.in/journal/diabetes-plate.html): You don't have to give up rice or roti. Portions, swaps and timing that keep sugar steady.
+- [Child has a fever? A calm parent's checklist](https://www.lumihospital.in/journal/child-fever.html): Most childhood fevers are harmless. Here's how to keep your child comfortable and when to come in.
+
+## Visiting
+- [Emergency & ambulance](https://www.lumihospital.in/emergency.html): what to do in an emergency and how to reach the hospital fast
+- [Patient & visitor guide](https://www.lumihospital.in/patient-guide.html): insurance, admissions, visiting hours, reports
+- [Contact & directions](https://www.lumihospital.in/contact.html)
+
+## Optional
+- [Full text for language models](https://www.lumihospital.in/llms-full.txt)
+- [About](https://www.lumihospital.in/about.html)
+- [Patient rights](https://www.lumihospital.in/patient-rights.html)
+- [Privacy policy](https://www.lumihospital.in/privacy.html)
+- [Medical disclaimer](https://www.lumihospital.in/disclaimer.html)

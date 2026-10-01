@@ -1,0 +1,105 @@
+/* ================= CONTACT ================= */
+.ct-hero { padding-bottom: clamp(28px, 4vw, 48px); }
+.ct-hero-in { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; }
+.ct-hero h1 { margin-bottom: 0; max-width: 12ch; }
+.ct-hero .lead { margin: 0 0 .4em; }
+.ct-cards-sec { padding-top: 0; }
+
+/* ---------- Bento ---------- */
+.ct-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(112px, auto); gap: clamp(12px, 1.4vw, 18px); }
+.ct-em { grid-column: span 7; grid-row: span 3; position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: clamp(24px, 3.4vw, 44px); border-radius: var(--r-xl); background: var(--hero-bg); color: #fff; min-height: 340px; }
+.ct-em-glow { position: absolute; inset: 0; z-index: -1; background: radial-gradient(70% 90% at 100% 0%, rgba(255, 93, 108, .34), transparent 60%); transition: opacity .6s; }
+.ct-em:hover .ct-em-glow { opacity: .7; }
+.ct-em-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.ct-em .label { color: rgba(255, 255, 255, .78); display: inline-flex; align-items: center; gap: 10px; }
+.ct-em .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ee08f; }
+.ct-em-ic { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #e5384a; color: #fff; flex: none; }
+.ct-em-ic .ic { width: 26px; height: 26px; }
+.ct-em-num { font-family: var(--f-display); font-weight: 650; font-size: clamp(2.2rem, 5.4vw, 5rem); letter-spacing: -.045em; line-height: .95; white-space: nowrap; }
+.ct-em-cta { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: #ff9aa3; }
+.ct-em-cta .ic { width: 18px; height: 18px; transition: transform .4s var(--ease); }
+.ct-em:hover .ct-em-cta .ic { transform: translate(3px, -3px); }
+.ct-em:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+.ct-card { grid-column: span 5; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 18px; row-gap: 4px; align-content: center; }
+.ct-card .ic-badge { grid-row: span 2; align-self: center; }
+.ct-card .label { align-self: end; }
+.ct-card b { font-family: var(--f-display); font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 600; letter-spacing: -.025em; line-height: 1.15; overflow-wrap: anywhere; }
+.ct-card .corner { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line-2); transition: .5s var(--ease); }
+.ct-card .corner .ic { width: 15px; height: 15px; }
+.ct-card:hover .corner { background: var(--ink); color: var(--paper); box-shadow: none; transform: rotate(45deg); }
+.ct-card:hover .ic-badge { background: var(--accent); color: var(--on-accent); }
+
+.ct-hours { grid-column: 1 / -1; }
+.ct-hours-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ct-status { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; font-weight: 550; padding: 6px 12px; border-radius: 999px; background: var(--paper-2); color: var(--ink-2); }
+.ct-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.ct-status.is-open { background: var(--accent-soft); color: var(--ink); }
+.ct-status.is-open i { background: var(--ok); }
+.ct-hours dl { margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 28px; }
+.ct-hours dl > div { padding: 12px 0; border-top: 1px solid var(--line); }
+.ct-hours dt { font-size: .8rem; color: var(--muted); }
+.ct-hours dd { margin: 2px 0 0; font-weight: 500; line-height: 1.45; }
+
+/* ---------- Map ---------- */
+.ct-map { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: center; }
+.ct-map-frame { position: relative; aspect-ratio: 4 / 3.2; border-radius: var(--r-xl); overflow: hidden; background: var(--paper); border: 1px solid var(--line); }
+.ct-map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+html[data-mode="dark"] .ct-map-frame iframe { filter: invert(.9) hue-rotate(180deg) saturate(.7) brightness(.95); }
+.ct-map-info h2 { margin: 14px 0 24px; max-width: 11ch; }
+.ct-addr { display: flex; gap: 12px; font-style: normal; font-family: var(--f-display); font-size: clamp(1.25rem, 2vw, 1.6rem); letter-spacing: -.02em; line-height: 1.3; margin-bottom: 24px; }
+.ct-addr .ic { color: var(--accent); margin-top: 5px; }
+.ct-tips { list-style: none; margin: 0 0 32px; padding: 0; border-top: 1px solid var(--line-2); }
+.ct-tips li { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line-2); color: var(--ink-2); font-size: .97rem; }
+.ct-tips .ic { color: var(--accent); margin-top: 3px; width: 18px; height: 18px; }
+
+/* ---------- Enquiry form ---------- */
+.ct-form-wrap { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.ct-form-intro { position: sticky; top: calc(var(--header-h) + 40px); }
+.ct-form-intro h2 { margin: 14px 0 20px; }
+.ct-warn { display: flex; gap: 12px; align-items: flex-start; margin-top: 28px; padding: 14px 16px; border-radius: var(--r-md); background: var(--danger-soft); font-size: .95rem; max-width: 44ch; }
+.ct-warn .ic { color: var(--danger); margin-top: 3px; }
+.ct-warn a { color: var(--danger); font-weight: 650; white-space: nowrap; }
+.ct-form { padding: clamp(22px, 3vw, 40px); }
+.ct-form .send-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 12px; }
+.ct-form .form-note { margin: 0; }
+.ct-form .form-done { display: flex; gap: 16px; align-items: flex-start; margin-top: 20px; padding: 18px; border-radius: var(--r-md); background: var(--accent-soft); border: 1px solid var(--accent-line); }
+.ct-form .form-done[hidden] { display: none; }
+.ct-form .form-done p { margin: 2px 0 0; color: var(--ink-2); font-size: .95rem; }
+.ct-form .done-ic { width: 40px; height: 40px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); }
+.ct-form .done-ic .ic { width: 20px; height: 20px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .ct-em { grid-column: 1 / -1; grid-row: auto; min-height: 280px; }
+  .ct-card { grid-column: span 4; }
+  .ct-hours dl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .ct-hero-in, .ct-map, .ct-form-wrap { grid-template-columns: 1fr; }
+  .ct-form-intro { position: static; }
+  .ct-card { grid-column: 1 / -1; }
+  .ct-hours dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .ct-hours dl { grid-template-columns: 1fr; }
+  .ct-bento { grid-auto-rows: auto; }
+  .ct-card { min-height: 96px; padding-right: 60px; }
+  .ct-em { min-height: 0; gap: 22px; }
+  .ct-em-num { font-size: clamp(2rem, 10.6vw, 3rem); }
+  .ct-map-frame { aspect-ratio: 1 / 1; }
+  .ct-form .send-row .btn { flex: 1 1 100%; justify-content: center; }
+  .ct-map-info .btn-row .btn { width: 100%; justify-content: center; }
+}
+html[data-mode="dark"] .ct-em { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+
+/* Wayfinding photo: what the building looks like when you arrive */
+.ct-find { position: relative; margin: clamp(32px, 5vw, 56px) 0 0; border-radius: var(--r-xl); overflow: hidden; aspect-ratio: 16 / 7.5; background: var(--paper-2); }
+.ct-find img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
+.ct-pin { position: absolute; display: grid; gap: 2px; padding: 10px 14px; border-radius: 14px; background: color-mix(in oklab, var(--surface-2) 92%, transparent); backdrop-filter: blur(10px); color: var(--ink); font-size: .8rem; box-shadow: var(--shadow); max-width: 220px; }
+.ct-pin b { font-size: .92rem; }
+.ct-pin::after { content: ""; position: absolute; left: 18px; bottom: -7px; width: 14px; height: 14px; background: inherit; transform: rotate(45deg); border-radius: 3px; }
+.ct-pin--main { left: 26%; top: 44%; }
+.ct-pin--er { left: 66%; top: 40%; }
+.ct-pin--er b { color: var(--danger); }
+@media (max-width: 700px) { .ct-find { aspect-ratio: 4 / 3; } .ct-pin { font-size: .72rem; padding: 8px 10px; max-width: 150px; } .ct-pin--main { left: 6%; top: 52%; } .ct-pin--er { left: auto; right: 4%; top: 30%; } }

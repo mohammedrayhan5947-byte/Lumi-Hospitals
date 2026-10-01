@@ -1,0 +1,51 @@
+/* ================= GRIEVANCE ================= */
+@import "../legal.css";
+.lg-doc:has(.gr-form) { max-width: 860px; }
+.lg-doc:has(.gr-form) > .lg-sec > p { max-width: 74ch; }
+
+.gr-offs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.gr-off { display: grid; gap: 10px; align-content: start; padding: clamp(18px, 2.2vw, 26px); border-radius: var(--r-lg); border: 1px solid var(--line); background: var(--surface); }
+.gr-off h3 { margin: 0; font-size: 1.25rem; }
+.gr-off ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .93rem; line-height: 1.45; }
+.gr-off li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; align-items: start; overflow-wrap: anywhere; }
+.gr-off li .ic { width: 16px; height: 16px; margin-top: 3px; color: var(--accent); }
+.lg-doc .gr-law { margin: 4px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: .84rem; line-height: 1.5; color: var(--muted); }
+
+.gr-times dd { font-family: var(--f-display); color: var(--ink); font-weight: 500; letter-spacing: -.01em; }
+
+.gr-form { display: grid; gap: 22px; padding: clamp(18px, 3vw, 34px); border-radius: var(--r-xl); border: 1px solid var(--line); background: var(--surface); font-size: 1rem; line-height: 1.5; }
+.gr-form fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.gr-form legend { font-size: .86rem; font-weight: 550; color: var(--ink); padding: 0; margin-bottom: 10px; }
+.gr-type-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.gr-type { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; min-height: 44px; padding: 14px; border-radius: var(--r-md); border: 1px solid var(--line-2); background: var(--surface-2); cursor: pointer; transition: border-color .25s, background-color .25s, box-shadow .25s; }
+.gr-type input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); }
+.gr-type b { display: block; font-size: .94rem; font-weight: 600; color: var(--ink); }
+.gr-type small { display: block; margin-top: 3px; font-size: .8rem; line-height: 1.4; color: var(--muted); }
+.gr-type:hover { border-color: var(--accent-line); }
+.gr-type:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.gr-type:has(input:focus-visible) { box-shadow: 0 0 0 4px var(--accent-soft); border-color: var(--accent); }
+.gr-form .gr-nominee { padding: 16px; border-radius: var(--r-md); border: 1px dashed var(--line-2); }
+.gr-form [hidden] { display: none !important; }
+.gr-form .form-note { margin: 0; line-height: 1.5; }
+.gr-form .form-note a { color: var(--accent); }
+.gr-form .send-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.gr-form:has(.form-done:not([hidden])) > :not(.form-done) { display: none; }
+.gr-form .form-done:not([hidden]) { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; }
+.gr-form .done-ic { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); }
+.gr-form .done-ic .ic { width: 26px; height: 26px; }
+.gr-form .form-done b { font-family: var(--f-display); font-size: 1.3rem; color: var(--ink); }
+.gr-form .form-done p { margin: 6px 0 0; color: var(--muted); }
+
+.gr-esc { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line-2); }
+.gr-esc li { padding: 18px 18px 18px 0; border-bottom: 1px solid var(--line-2); }
+.gr-esc li:nth-child(even) { padding-left: 18px; padding-right: 0; border-left: 1px solid var(--line-2); }
+.gr-esc h3 { margin: 0 0 6px; font-size: 1.04rem; }
+.lg-doc .gr-esc p { margin: 0 0 8px; font-size: .93rem; color: var(--muted); line-height: 1.55; }
+.lg-doc .gr-esc a { min-height: 32px; font-size: .9rem; text-decoration: none; }
+
+@media (max-width: 860px) { .gr-type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .gr-offs, .gr-esc, .gr-type-grid { grid-template-columns: 1fr; }
+  .gr-esc li:nth-child(even) { padding-left: 0; border-left: 0; }
+  .gr-form .send-row .btn { flex: 1 1 100%; justify-content: space-between; }
+}

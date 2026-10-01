@@ -1,0 +1,99 @@
+/* ================= DOCTOR PROFILE ================= */
+.dc-hero { padding-top: clamp(32px, 5vw, 72px); }
+.dc-hero-in { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+
+.dc-portrait { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r-xl); overflow: hidden; }
+.dc-portrait-in { position: absolute; inset: -7% 0; }
+.dc-portrait-in img { width: 100%; height: 100%; object-fit: cover; }
+.dc-portrait .ph-mono .initials { font-size: clamp(5rem, 12vw, 10rem); letter-spacing: -.06em; }
+.dc-dept { position: absolute; left: 16px; bottom: 16px; z-index: 1; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 16px 6px 6px; border-radius: 999px; font-size: .9rem; font-weight: 550;
+  background: color-mix(in oklab, var(--surface-2) 90%, transparent); color: var(--ink); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: transform .5s var(--ease); }
+.dc-dept:hover { transform: translateY(-2px); }
+.dc-dept-ic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); }
+.dc-dept-ic .ic { width: 17px; height: 17px; }
+
+.dc-intro h1 { margin: 18px 0 14px; font-size: clamp(2.8rem, 6.4vw, 6rem); max-width: 10ch; }
+.dc-role { font-size: var(--fs-lead); color: var(--ink-2); margin: 0 0 clamp(24px, 3vw, 40px); max-width: 34ch; line-height: 1.4; }
+.dc-facts { display: grid; grid-template-columns: 1fr 1fr; margin: 0 0 clamp(24px, 3vw, 36px); border-top: 1px solid var(--line-2); }
+.dc-facts > div { padding: 16px 20px 16px 0; border-bottom: 1px solid var(--line); display: grid; gap: 6px; align-content: start; }
+.dc-facts > div:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--line); }
+.dc-facts dd { margin: 0; font-weight: 500; color: var(--ink); line-height: 1.4; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.dc-facts dd b { font-family: var(--f-display); font-size: 1.9rem; font-weight: 600; letter-spacing: -.04em; line-height: 1; }
+.dc-live { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); align-self: center; animation: dc-live 2s infinite; box-shadow: 0 0 0 0 color-mix(in oklab, var(--ok) 60%, transparent); }
+@keyframes dc-live { to { box-shadow: 0 0 0 9px transparent; } }
+
+/* Weekly OPD strip */
+.week { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: clamp(6px, 1vw, 14px); }
+.day { display: flex; flex-direction: column; gap: 14px; padding: clamp(12px, 1.4vw, 20px); border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); position: relative; }
+.day-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.day-head b { font-family: var(--f-display); font-size: clamp(1.4rem, 2.4vw, 2.2rem); font-weight: 600; letter-spacing: -.04em; line-height: 1; margin-left: auto; }
+.day-now { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); font-family: var(--f-mono); font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; padding: .35em .7em; border-radius: 999px; background: var(--ink); color: var(--paper); white-space: nowrap; }
+.day-track { position: relative; height: clamp(150px, 18vw, 240px); border-radius: 12px; background: repeating-linear-gradient(to bottom, transparent 0 calc(100% / 14 - 1px), var(--line) calc(100% / 14 - 1px) calc(100% / 14)); }
+.day-bar { position: absolute; left: 0; right: 0; border-radius: 10px; background: var(--accent); box-shadow: 0 10px 30px -12px var(--accent); }
+.day-off { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-family: var(--f-mono); }
+.day-foot { font-size: .82rem; color: var(--ink-2); line-height: 1.3; min-height: 2.6em; }
+.day:not(.is-on) { background: transparent; border-style: dashed; }
+.day:not(.is-on) .day-head b, .day:not(.is-on) .day-foot { color: var(--muted); }
+.day.is-today { border: 1px solid var(--ink); }
+.day-bar { display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px; color: var(--on-accent); font-family: var(--f-mono); font-size: .66rem; letter-spacing: .04em; font-style: normal; text-transform: uppercase; overflow: hidden; }
+.day-bar span { white-space: nowrap; line-height: 1.2; }
+
+/* About + focus */
+.dc-about { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(40px, 6vw, 96px); align-items: start; }
+.dc-bio { font-family: var(--f-display); font-size: clamp(1.6rem, 3vw, 2.7rem); line-height: 1.15; letter-spacing: -.035em; font-weight: 500; margin: 20px 0 36px; max-width: 24ch; }
+.dc-deptcard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; max-width: 560px; }
+.dc-deptcard b { display: block; font-family: var(--f-display); font-size: 1.3rem; letter-spacing: -.02em; font-weight: 600; margin-top: 2px; }
+.dc-deptcard small { display: block; color: var(--muted); font-size: .9rem; }
+.dc-deptcard-go { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line-2); transition: .5s var(--ease); }
+.dc-deptcard-go .ic { width: 16px; height: 16px; }
+.dc-deptcard:hover .dc-deptcard-go { background: var(--ink); color: var(--paper); box-shadow: none; transform: rotate(45deg); }
+.dc-focus { list-style: none; margin: 20px 0 0; padding: 0; border-top: 1px solid var(--line-2); }
+.dc-focus li { display: flex; gap: 18px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--line-2); font-family: var(--f-display); font-size: clamp(1.3rem, 2vw, 1.8rem); letter-spacing: -.03em; font-weight: 500; line-height: 1.15; }
+.dc-focus .num { font-size: .78rem; color: var(--accent); letter-spacing: 0; }
+
+/* Booking band */
+.dc-book { position: relative; overflow: hidden; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 28px 56px; align-items: end; border-radius: var(--r-xl); background: var(--hero-bg); color: #fff; padding: clamp(36px, 6vw, 80px); }
+html[data-mode="dark"] .dc-book { box-shadow: inset 0 0 0 1px var(--line-2); }
+.dc-book .label { color: rgba(255, 255, 255, .6); }
+.dc-book h2 { color: #fff; margin: 16px 0 14px; max-width: 13ch; }
+.dc-book h2 em { color: color-mix(in oklab, var(--accent) 45%, #fff); }
+.dc-book p { color: rgba(255, 255, 255, .72); max-width: 46ch; margin: 0; }
+.dc-book-glow { position: absolute; inset: 0; z-index: -1; background: radial-gradient(55% 90% at 100% 100%, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%); }
+
+@media (max-width: 1000px) {
+  .dc-hero-in, .dc-about { grid-template-columns: 1fr; }
+  .dc-portrait { aspect-ratio: 4 / 3.6; max-width: 560px; }
+  .dc-book { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .week { gap: 4px; }
+  .day { padding: 10px 4px; gap: 10px; border-radius: 14px; align-items: center; }
+  .day-head { flex-direction: column; align-items: center; gap: 4px; }
+  .day-head b { margin: 0; font-size: 1.25rem; }
+  .day-head .label { font-size: .62rem; }
+  .day-track { width: 100%; height: 150px; border-radius: 8px; }
+  .day-bar { left: 4px; right: 4px; border-radius: 6px; padding: 0; }
+  .day-bar span { display: none; }
+  .day-foot { display: none; }
+  .day-now { font-size: .56rem; top: -9px; }
+}
+@media (max-width: 600px) {
+  .dc-portrait { aspect-ratio: 4 / 3; }
+  .dc-facts { grid-template-columns: 1fr; }
+  .dc-facts > div:nth-child(even) { padding-left: 0; border-left: 0; }
+  .dc-deptcard { grid-template-columns: auto minmax(0, 1fr); }
+  .dc-deptcard-go { display: none; }
+}
+
+/* Compact horizontal doctor cards on phones */
+@media (max-width: 600px) {
+  .dc-more .doc-card { flex-direction: row; }
+  .dc-more .doc-media { flex: 0 0 38%; aspect-ratio: auto; min-height: 210px; border-radius: calc(var(--r-lg) - 1px) 0 0 calc(var(--r-lg) - 1px); }
+  .dc-more .doc-media .ph-mono .initials { font-size: 2.4rem; }
+  .dc-more .doc-media .tag { display: none; }
+  .dc-more .doc-body { padding: 16px; min-width: 0; }
+  .dc-more .doc-body h3 { font-size: 1.15rem; }
+  .dc-more .doc-role { font-size: .85rem; }
+  .dc-more .doc-actions { padding-top: 12px; }
+  .dc-more .doc-actions .btn { padding: 0 .8em; }
+}

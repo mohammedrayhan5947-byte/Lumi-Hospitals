@@ -1,0 +1,17 @@
+/* ================= DISCLAIMER ================= */
+@import "../legal.css";
+
+/* Emergency call-out in the hero */
+.ds-em { display: inline-grid; grid-template-columns: auto auto auto; align-items: center; gap: 16px; margin-top: 22px; padding: 12px 22px 12px 12px; border-radius: 999px; background: var(--danger); color: #fff; transition: transform .5s var(--ease); }
+.ds-em:hover { transform: translateY(-2px); }
+.ds-em-ic { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in oklab, currentColor 18%, transparent); }
+.ds-em-ic .ic { width: 22px; height: 22px; }
+.ds-em small { display: block; color: inherit; opacity: .85; }
+.ds-em b { font-family: var(--f-display); font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
+.ds-em-alt { padding-left: 16px; border-left: 1px solid color-mix(in oklab, currentColor 35%, transparent); font-size: .9rem; }
+.ds-em-alt b { font-size: 1rem; }
+@media (max-width: 520px) {
+  .ds-em { display: grid; grid-template-columns: auto 1fr; border-radius: var(--r-lg); width: 100%; }
+  .ds-em-alt { grid-column: 1 / -1; border-left: 0; padding-left: 4px; }
+}
+html[data-mode="dark"] .ds-em { color: var(--paper); }

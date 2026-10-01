@@ -1,0 +1,41 @@
+/* ================= 404 ================= */
+.nf { position: relative; min-height: calc(100svh - var(--header-h)); display: flex; flex-direction: column; justify-content: center; padding-block: clamp(48px, 7vw, 100px); overflow: hidden; isolation: isolate; }
+.nf-glow { position: absolute; z-index: -1; width: min(110vw, 1200px); aspect-ratio: 1; left: 50%; top: 42%; translate: -70% -50%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in oklab, var(--accent) 22%, transparent), transparent 62%); }
+.nf-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+
+.nf-code { display: flex; align-items: center; justify-content: center; gap: clamp(4px, 1vw, 16px); font-family: var(--f-display); font-weight: 600; font-size: clamp(7rem, 20vw, 19rem); line-height: .8; letter-spacing: -.07em; color: var(--ink); user-select: none; }
+.nf-code > span:not(.nf-orb) { display: inline-block; }
+.nf-orb { position: relative; width: .78em; aspect-ratio: 1; display: grid; place-items: center; flex: none; }
+.nf-orb svg { position: absolute; inset: -18%; width: 136%; height: 136%; overflow: visible; }
+.nf-rays { stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; transform-origin: 100px 100px; animation: nf-spin 40s linear infinite; }
+.nf-core { width: 62%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, color-mix(in oklab, var(--accent) 30%, #fff), var(--accent) 58%, color-mix(in oklab, var(--accent) 70%, var(--ink)));
+  box-shadow: 0 0 50px 6px color-mix(in oklab, var(--accent) 40%, transparent); animation: nf-breathe 5s var(--ease-in-out) infinite; }
+.nf-halo { position: absolute; inset: -40%; border-radius: 50%; background: radial-gradient(circle, color-mix(in oklab, var(--accent) 30%, transparent), transparent 62%); animation: nf-breathe 5s var(--ease-in-out) infinite reverse; }
+@keyframes nf-spin { to { transform: rotate(360deg); } }
+@keyframes nf-breathe { 50% { transform: scale(1.08); } }
+
+.nf-copy h1 { font-size: clamp(2.4rem, 4.8vw, 4.4rem); max-width: 13ch; margin: 18px 0 22px; }
+.nf-copy .lead { margin: 0 0 32px; max-width: 42ch; }
+.nf-em { margin: 22px 0 0; color: var(--muted); font-size: .95rem; }
+.nf-em a { color: var(--danger); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+.nf-links { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; margin-top: clamp(48px, 7vw, 96px); padding-top: 22px; border-top: 1px solid var(--line-2); }
+.nf-links ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.nf-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 500; color: var(--ink-2); transition: color .3s; }
+.nf-links a .ic { width: 14px; height: 14px; color: var(--muted); transition: transform .4s var(--ease), color .3s; }
+.nf-links a:hover { color: var(--ink); }
+.nf-links a:hover .ic { color: var(--accent); transform: translate(2px, -2px); }
+
+html:not(.js-motion) .nf-rays, html:not(.js-motion) .nf-core, html:not(.js-motion) .nf-halo { animation: none; }
+
+@media (max-width: 860px) {
+  .nf-in { grid-template-columns: 1fr; }
+  .nf-code { justify-content: flex-start; font-size: clamp(6rem, 34vw, 12rem); }
+  .nf-glow { translate: -60% -60%; }
+}
+@media (max-width: 600px) {
+  .nf-copy .btn { flex: 1 1 100%; justify-content: space-between; }
+  .nf-links ul { gap: 0 18px; }
+}

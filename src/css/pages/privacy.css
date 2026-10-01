@@ -1,0 +1,4 @@
+/* ================= PRIVACY ================= */
+@import "../legal.css";
+.lg-cta { margin-top: 22px; }
+@media (max-width: 520px) { .lg-cta .btn { flex: 1 1 100%; justify-content: space-between; } }

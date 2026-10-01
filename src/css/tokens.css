@@ -1,0 +1,98 @@
+/* ================= TOKENS =================
+   Mode:    html[data-mode="light|dark"]  (resolved from user choice / OS)
+   Accent:  html[data-accent="aurora|sapphire|ember|plum"] or inline --accent (seasons)
+   A11y:    html[data-a11y~="contrast|large|calm|links"]
+   ========================================== */
+:root {
+  --paper: #f3f1ec;
+  --paper-2: #e9e6df;
+  --surface: #faf9f6;
+  --surface-2: #ffffff;
+  --ink: #0f1413;
+  --ink-2: #29302e;
+  --muted: #646d6a;
+  --line: rgba(15, 20, 19, .11);
+  --line-2: rgba(15, 20, 19, .2);
+  --danger: #d4283a;
+  --danger-soft: #fbe4e6;
+  --ok: #138a52;
+
+  --accent-l: #2268b8;   /* Lumi blue (from signage) */
+  --accent-d: #7db3ff;
+  --brand-red: #d8262f;  /* Lumi red (logo cross) */
+  --brand-blue: #2b74c7;
+  --accent: var(--accent-l);
+  --on-accent: #ffffff;
+  --accent-soft: color-mix(in oklab, var(--accent) 12%, var(--paper));
+  --accent-line: color-mix(in oklab, var(--accent) 35%, transparent);
+  --glow: color-mix(in oklab, var(--accent) 55%, #fff);
+
+  --hero-bg: #0b100f;
+  --hero-ink: #eef1ec;
+
+  --f-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-body: "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Geist Mono Variable", "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-serif: "Instrument Serif", Georgia, serif;
+
+  --fs-hero: clamp(3rem, 8.2vw, 8.4rem);
+  --fs-h1: clamp(2.6rem, 6vw, 5.6rem);
+  --fs-h2: clamp(2.1rem, 4.4vw, 4rem);
+  --fs-h3: clamp(1.25rem, 1.6vw, 1.5rem);
+  --fs-lead: clamp(1.08rem, 1.3vw, 1.3rem);
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --maxw: 1360px;
+  --r-xl: 32px;
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --shadow: 0 1px 1px rgba(15, 20, 19, .04), 0 12px 32px -14px rgba(15, 20, 19, .18);
+  --shadow-lg: 0 40px 80px -30px rgba(15, 20, 19, .35);
+  --header-h: 76px;
+  color-scheme: light;
+}
+
+html[data-mode="dark"] {
+  --paper: #0b0e0d;
+  --paper-2: #121615;
+  --surface: #151a18;
+  --surface-2: #1b211f;
+  --ink: #ebeee9;
+  --ink-2: #c9cfcb;
+  --muted: #929b97;
+  --line: rgba(235, 238, 233, .1);
+  --line-2: rgba(235, 238, 233, .2);
+  --danger: #ff5d6c;
+  --danger-soft: #3a1418;
+  --accent: var(--accent-d);
+  --on-accent: #06110e;
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, var(--paper));
+  --shadow: 0 1px 1px rgba(0, 0, 0, .3), 0 16px 40px -16px rgba(0, 0, 0, .6);
+  --shadow-lg: 0 40px 80px -30px rgba(0, 0, 0, .8);
+  --hero-bg: #070a09;
+  color-scheme: dark;
+}
+
+/* Accent palettes (light value / dark value) */
+html[data-accent="aurora"]   { --accent-l: #0e8a70; --accent-d: #3fd4a9; }
+html[data-accent="ember"]    { --accent-l: #c24a14; --accent-d: #ff9259; }
+html[data-accent="plum"]     { --accent-l: #7638c2; --accent-d: #bb94ff; }
+html[data-accent="season"]   { --accent-l: var(--season-l); --accent-d: var(--season-d); }
+html[data-mode="dark"][data-accent="lumi"],
+html[data-mode="dark"][data-accent="plum"] { --on-accent: #0a0b14; }
+
+/* Accessibility modes */
+html[data-a11y~="large"] { font-size: 118%; }
+html[data-a11y~="contrast"] {
+  --muted: var(--ink-2);
+  --line: var(--line-2);
+  --accent-l: color-mix(in oklab, var(--accent-l) 75%, #000);
+}
+html[data-mode="dark"][data-a11y~="contrast"] { --paper: #000; --surface: #0d0d0d; --ink: #fff; --ink-2: #fff; --accent-d: color-mix(in oklab, var(--accent-d) 70%, #fff); }
+html[data-a11y~="links"] a:not(.btn):not(.nav-link):not(.logo) { text-decoration: underline; text-underline-offset: 3px; }
+html[data-a11y~="calm"] *, html[data-a11y~="calm"] *::before, html[data-a11y~="calm"] *::after {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important;
+}

@@ -1,0 +1,6 @@
+node_modules
+.shots
+raw
+raw-stock
+.vercel
+*.log
