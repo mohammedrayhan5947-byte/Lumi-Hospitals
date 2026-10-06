@@ -1,4 +1,4 @@
-import{$ as e,G as t,H as n,J as r,L as i,N as a,O as o,P as s,Q as c,R as l,S as u,U as d,V as f,W as p,X as m,_ as h,b as g,g as _,q as v,t as y,v as b,w as x,x as S,y as C,z as w}from"./core-B_N3YoAS.js";import{n as T,t as E}from"./media-DPWLg7EO.js";var D=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`,O=`precision highp float;
+import{$ as e,G as t,H as n,J as r,L as i,N as a,O as o,P as s,Q as c,R as l,S as u,U as d,V as f,W as p,X as m,_ as h,b as g,g as _,q as v,t as y,v as b,w as x,x as S,y as C,z as w}from"./core-Cli6QvB8.js";import{n as T,t as E}from"./media-BXwQlsWa.js";var D=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`,O=`precision highp float;
 uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 c1;uniform vec3 c2;uniform vec3 bg;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);

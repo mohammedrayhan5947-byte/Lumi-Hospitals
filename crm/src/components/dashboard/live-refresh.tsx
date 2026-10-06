@@ -8,9 +8,10 @@ import { RefreshCw } from "lucide-react"
 export function LiveRefresh({ everySeconds = 30 }: { everySeconds?: number }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
-  const [updatedAt, setUpdatedAt] = useState(() => new Date())
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null)
 
   useEffect(() => {
+    setUpdatedAt(new Date())
     const refresh = () => {
       if (document.visibilityState !== "visible") return
       startTransition(() => {
@@ -29,7 +30,7 @@ export function LiveRefresh({ everySeconds = 30 }: { everySeconds?: number }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground" aria-live="polite">
       <RefreshCw className={`h-3 w-3 ${pending ? "animate-spin" : ""}`} />
-      Live · updated {updatedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+      Live{updatedAt ? ` · updated ${updatedAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : ""}
     </span>
   )
 }
