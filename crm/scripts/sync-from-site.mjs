@@ -1,4 +1,4 @@
-/* Exports the website's hospital data (../src/data/site.js) into prisma/lumi-data.json,
+/* Exports the website's hospital data (../web/src/data/site.js) into prisma/lumi-data.json,
    the single source the CRM seed, brand strings and print templates read.
    Run: npm run sync:site   (also runs before db:seed) */
 import { writeFileSync } from "node:fs";
@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolve, dirname } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const site = await import(pathToFileURL(resolve(here, "../../src/data/site.js")).href);
+const site = await import(pathToFileURL(resolve(here, "../../web/src/data/site.js")).href);
 const { BIZ, DEPARTMENTS, DOCTORS, PACKAGES, FAQ } = site;
 
 const data = {

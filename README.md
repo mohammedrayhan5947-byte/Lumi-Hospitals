@@ -1,17 +1,10 @@
-# Lumi Hospital website
+# Lumi Hospital
 
-Vite + GSAP + Lenis. All content lives in `src/data/site.js`. Conventions: `CONVENTIONS.md`. Legal notes: `docs/legal-compliance.md`.
+| Folder | What it is | Run locally |
+|---|---|---|
+| [`web/`](web) | Public website (Vite, prerendered) | `cd web && npm install && npm run dev` (http://localhost:5173) |
+| [`crm/`](crm) | Staff CRM (Next.js + Prisma + Supabase) | `cd crm && npm install && npm run dev` (http://localhost:3000) |
 
-## Develop
-    npm install
-    npm run dev          # http://localhost:5173
+The website's `web/src/data/site.js` is the single source of truth for departments, doctors and packages; `cd crm && npm run db:seed` syncs it into the CRM.
 
-## Build & deploy
-    npm run build        # vite build + prerender (needs local Chrome) + sitemap/robots/llms.txt
-    git add -A && git commit -m "build" && git push
-
-`dist/` is committed on purpose: Vercel serves it as-is (see `vercel.json`), because the prerender step needs Chrome.
-Always run `npm run build` before pushing content changes.
-
-## Before launch
-Replace every TODO in `src/data/site.js` (phones, address, hours, doctors, prices, `siteUrl`, `BIZ.legal`), then rebuild.
+Deploy as two Vercel projects: Root Directory `web` and Root Directory `crm`.

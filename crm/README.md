@@ -6,7 +6,7 @@ used by the website. Next.js (App Router) + Prisma 7 + Postgres, shadcn/ui.
 
 ## One source of truth: the website
 Departments, doctors (with OPD days/times), health packages, FAQs and hospital details live in the website's
-`../src/data/site.js`. `npm run sync:site` exports them to `prisma/lumi-data.json`; `npm run db:seed` loads them
+`../web/src/data/site.js`. `npm run sync:site` exports them to `prisma/lumi-data.json`; `npm run db:seed` loads them
 (specialities and packages become bookable **services**, doctors become **staff + weekly availability**).
 Edit the website data, re-run `db:seed`, done. Existing staff passwords are kept.
 
@@ -30,4 +30,4 @@ ADMIN, DOCTOR, RECEPTIONIST, BILLING (see `requireRole()` in `src/actions/*`). D
 
 ## Deploy (Vercel)
 Second Vercel project with **Root Directory = `crm`**. Env: `DATABASE_URL`, `DIRECT_URL`, `PUBLIC_SITE_ORIGIN`, Supabase keys.
-For migrations/db push use the direct (non-pooled) URL. The seed needs `../src/data/site.js`, so run it from the repo root checkout (locally), not on Vercel.
+For migrations/db push use the direct (non-pooled) URL. The seed needs `../web/src/data/site.js`, so run it from the repo root checkout (locally), not on Vercel.
