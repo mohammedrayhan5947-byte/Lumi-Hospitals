@@ -1,7 +1,7 @@
 import { boot } from "../core.js";
 import "../../css/home.css";
 import { BIZ, DEPARTMENTS, DOCTORS, PACKAGES, POSTS, JOURNEY, TESTIMONIALS, FAQ } from "../../data/site.js";
-import { $, $$, esc, tel, btn, icon, pad, deptCard, doctorCard, packageCard, postCard, secHead, accordion, media } from "../render.js";
+import { $, $$, esc, tel, btn, icon, pad, deptCard, packageCard, postCard, secHead, accordion, media } from "../render.js";
 import { logoMark } from "../layout.js";
 import { pic, figure } from "../media.js";
 import { lumenField } from "../shader.js";
@@ -92,12 +92,6 @@ const feature = () => `
         .map(([ic, h, p]) => `<div class="feat" data-reveal><span class="ic-badge">${icon(ic)}</span><div><h3>${h}</h3><p>${p}</p></div></div>`).join("")}
     </div>
   </div>
-</div></section>`;
-
-const doctors = () => `
-<section class="section section--alt"><div class="container">
-  ${secHead("04", "Doctors", `Meet the people behind <em>your</em> care.`, btn("/doctors.html", `All ${DOCTORS.length} doctors`, "line"))}
-  <div class="grid g4">${DOCTORS.slice(0, 4).map(doctorCard).join("")}</div>
 </div></section>`;
 
 const journey = () => `
@@ -235,7 +229,7 @@ function preloader() {
 }
 
 boot(async () => {
-  $("main").innerHTML = hero() + marquee() + manifesto() + filmstrip() + specialities() + feature() + doctors() + journey() + packages() + testimonials() + insurers() + journal() + faq() + cta();
+  $("main").innerHTML = hero() + marquee() + manifesto() + filmstrip() + specialities() + feature() + journey() + packages() + testimonials() + insurers() + journal() + faq() + cta();
   // WebGL after first paint; skipped on weak/software GPUs by shader.js
   (window.requestIdleCallback || (f => setTimeout(f, 200)))(() => lumenField($("#lumen")), { timeout: 800 });
   manifestoWords();

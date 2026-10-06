@@ -1,1 +1,0 @@
-import{f as e,i as t,t as n,y as r}from"./core-CdQdIRLX.js";import{i,n as a}from"./legal-page-Cm62z0L3.js";n(()=>{r(`main`).innerHTML=i(e),a(e),t()});

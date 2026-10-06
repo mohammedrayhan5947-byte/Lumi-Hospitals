@@ -74,7 +74,7 @@ export async function getRevenueDashboard() {
   const now = new Date()
   const monthStart = startOfDay(subDays(now, 29))
 
-  const [bills, payments, expensesThisMonth, outstandingTotal] = await Promise.all([
+  const [bills, rawPayments, refunds, expensesThisMonth, outstandingTotal] = await Promise.all([
     prisma.bill.findMany({
       where: { issuedAt: { gte: monthStart }, status: { not: "CANCELLED" } },
       select: { issuedAt: true, netAmount: true, taxAmount: true, service: { select: { name: true } } },
@@ -82,6 +82,10 @@ export async function getRevenueDashboard() {
     prisma.payment.findMany({
       where: { paidAt: { gte: monthStart }, status: "SUCCESS" },
       select: { paidAt: true, amount: true, method: true },
+    }),
+    prisma.refund.findMany({
+      where: { status: "COMPLETED", processedAt: { gte: monthStart } },
+      select: { processedAt: true, amount: true, method: true },
     }),
     prisma.expense.aggregate({
       where: { expenseDate: { gte: startOfDay(subDays(now, 29)) } },
@@ -92,6 +96,12 @@ export async function getRevenueDashboard() {
       _sum: { balanceDue: true },
     }),
   ])
+
+  // Completed refunds reduce collections (negative entries on the refund date)
+  const payments = [
+    ...rawPayments,
+    ...refunds.map((r) => ({ paidAt: r.processedAt ?? now, amount: -Number(r.amount), method: r.method })),
+  ]
 
   const todayStart = startOfDay(now)
   const todayEnd = endOfDay(now)
@@ -145,7 +155,7 @@ export async function getRevenueDashboard() {
 // ── Financial report ────────────────────────────────────────────────────
 
 export async function getFinancialReport(from: Date, to: Date) {
-  const [bills, payments, expenses] = await Promise.all([
+  const [bills, rawPayments, refunds, expenses] = await Promise.all([
     prisma.bill.findMany({
       where: { issuedAt: { gte: from, lte: to }, status: { not: "CANCELLED" } },
       include: { service: { select: { name: true } } },
@@ -153,9 +163,14 @@ export async function getFinancialReport(from: Date, to: Date) {
     prisma.payment.findMany({
       where: { paidAt: { gte: from, lte: to }, status: "SUCCESS" },
     }),
+    prisma.refund.findMany({ where: { status: "COMPLETED", processedAt: { gte: from, lte: to } } }),
     prisma.expense.findMany({ where: { expenseDate: { gte: from, lte: to } } }),
   ])
 
+  const payments = [
+    ...rawPayments,
+    ...refunds.map((r) => ({ amount: -Number(r.amount), method: r.method })),
+  ]
   const totalRevenue = bills.reduce((sum, b) => sum + Number(b.netAmount), 0)
   const totalCollected = payments.reduce((sum, p) => sum + Number(p.amount), 0)
   const totalDiscount = bills.reduce((sum, b) => sum + Number(b.discountAmount), 0)

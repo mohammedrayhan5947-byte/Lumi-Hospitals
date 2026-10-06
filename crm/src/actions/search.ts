@@ -2,8 +2,10 @@
 
 import { prisma } from "@/lib/prisma"
 import { parseSmartQuery, normalizeBloodGroup } from "@/lib/smart-query"
+import { getCurrentUser } from "@/lib/auth"
 
 export async function globalSearch(rawQuery: string) {
+  await getCurrentUser()
   const parsed = parseSmartQuery(rawQuery)
   const where: Record<string, unknown> = {}
   const AND: Record<string, unknown>[] = []

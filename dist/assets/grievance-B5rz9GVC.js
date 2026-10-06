@@ -1,4 +1,4 @@
-import{O as e,V as t,W as n,b as r,i,l as a,p as o,r as s,s as c,t as l,y as u,z as d}from"./core-CdQdIRLX.js";import{i as f,n as p,r as m,t as h}from"./legal-page-Cm62z0L3.js";var g=n.legal,_=t=>t?e(t):h,v=(n,r,i)=>`
+import{O as e,V as t,W as n,b as r,i,l as a,p as o,r as s,s as c,t as l,y as u,z as d}from"./core-2HSPU3Fo.js";import{i as f,n as p,r as m,t as h}from"./legal-page-DO8UTEUa.js";var g=n.legal,_=t=>t?e(t):h,v=(n,r,i)=>`
   <article class="gr-off">
     <span class="label">${n}</span>
     <h3>${_(i.name)}</h3>

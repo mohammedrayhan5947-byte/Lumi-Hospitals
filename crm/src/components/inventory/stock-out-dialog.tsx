@@ -73,19 +73,23 @@ export function StockOutDialog({ item, defaultPatientId, defaultPatientName, tri
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger ? (trigger as any) : undefined}>
-        {!trigger && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1 text-xs"
-            disabled={item.currentStock <= 0}
-          >
-            <ArrowUpFromLine className="h-3.5 w-3.5 text-amber-600" />
-            Stock Out
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger ? (
+            (trigger as React.ReactElement)
+          ) : (
+            <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-xs"
+                        disabled={item.currentStock <= 0}
+                      >
+                        <ArrowUpFromLine className="h-3.5 w-3.5 text-amber-600" />
+                        Stock Out
+                      </Button>
+          )
+        }
+      />
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

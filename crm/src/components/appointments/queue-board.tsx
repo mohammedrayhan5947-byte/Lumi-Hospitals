@@ -84,7 +84,7 @@ function QueueRow({ entry }: { entry: Queue[number] }) {
           {patientDisplayName(entry.patient)}
         </Link>
         <p className="text-xs text-muted-foreground">
-          {appointmentTypeLabels[entry.type]} · checked in {formatRelative(entry.checkedInAt)}
+          {appointmentTypeLabels[entry.type]} · checked in {entry.checkedInAt ? formatRelative(entry.checkedInAt) : "just now"}
         </p>
       </div>
       <Badge variant={isInProgress ? "default" : "secondary"}>{isInProgress ? "In Progress" : "Waiting"}</Badge>

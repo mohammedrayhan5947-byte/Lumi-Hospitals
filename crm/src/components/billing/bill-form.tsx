@@ -73,7 +73,8 @@ export function BillForm({
     setServiceId(id)
     const service = services.find((s) => s.id === id)
     if (!service) return
-    setItems([{ description: service.name, quantity: "1", unitPrice: String(Number(service.price ?? 0)), taxRatePercent: "0" }])
+    if (service.price == null) toast.info("This service has no set price - enter the amount")
+    setItems([{ description: service.name, quantity: "1", unitPrice: service.price == null ? "" : String(Number(service.price)), taxRatePercent: "0" }])
   }
 
   const totals = useMemo(() => {
@@ -96,6 +97,10 @@ export function BillForm({
     e.preventDefault()
     if (!patientId) {
       toast.error("Select a patient")
+      return
+    }
+    if (items.some((it) => it.description.trim() && !(Number(it.unitPrice) > 0))) {
+      toast.error("Enter a unit price greater than 0 for every line item")
       return
     }
     const validItems = items.filter((it) => it.description.trim() && Number(it.unitPrice) > 0)
@@ -147,7 +152,7 @@ export function BillForm({
             <div className="space-y-1.5 sm:col-span-2">
               <Label>Service (optional)</Label>
               <Select
-                items={{ NONE: "No service", ...Object.fromEntries(services.map((s) => [s.id, `${s.name} — ${formatCurrency(Number(s.price ?? 0))}`])) }}
+                items={{ NONE: "No service", ...Object.fromEntries(services.map((s) => [s.id, `${s.name} — ${(s.price == null ? "price on entry" : formatCurrency(Number(s.price)))}`])) }}
                 value={serviceId || "NONE"}
                 onValueChange={(v) => (v && v !== "NONE" ? applyService(v) : setServiceId(""))}
               >
@@ -155,7 +160,7 @@ export function BillForm({
                 <SelectContent>
                   <SelectItem value="NONE">No service</SelectItem>
                   {services.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.name} — {formatCurrency(Number(s.price ?? 0))}</SelectItem>
+                    <SelectItem key={s.id} value={s.id}>{s.name} — {(s.price == null ? "price on entry" : formatCurrency(Number(s.price)))}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

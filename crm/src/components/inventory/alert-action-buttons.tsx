@@ -51,7 +51,7 @@ export function AlertActionButtons({ alert, isAdmin }: AlertActionButtonsProps) 
   }
 
   return (
-    <div className="flex items-center justify-end gap-1.5">
+    <div className="flex flex-wrap items-center justify-end gap-1.5">
       <StockInDialog item={alert.item} />
 
       {isAdmin && alert.status === "ACTIVE" && (

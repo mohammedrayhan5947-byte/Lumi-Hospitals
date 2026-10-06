@@ -34,9 +34,13 @@ export async function closeCashSession(id: string, input: CashSessionCloseInput)
 
   const session = await prisma.cashSession.findUniqueOrThrow({ where: { id }, include: { payments: true } })
   const cashCollected = session.payments
-    .filter((p) => p.status === "SUCCESS")
+    .filter((p) => p.status === "SUCCESS" && p.method === "CASH")
     .reduce((sum, p) => sum + Number(p.amount), 0)
-  const expectedClosing = Number(session.openingBalance) + cashCollected
+  const cashRefunded = await prisma.refund.aggregate({
+    where: { status: "COMPLETED", method: "CASH", processedAt: { gte: session.openedAt } },
+    _sum: { amount: true },
+  })
+  const expectedClosing = Number(session.openingBalance) + cashCollected - Number(cashRefunded._sum.amount ?? 0)
 
   await prisma.cashSession.update({
     where: { id },

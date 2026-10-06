@@ -109,7 +109,8 @@
       <div class="footer-word" aria-hidden="true">${[...e.short].map(e=>`<span>${e}</span>`).join(``)}</div>
     </div>
     <div class="footer-bottom container"><span>© ${new Date().getFullYear()} ${F(e.name)}</span>
-      <nav class="legal-nav" aria-label="Legal"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/disclaimer.html">Disclaimer</a><a href="/patient-rights.html">Patient rights</a><a href="/grievance.html">Grievance</a><button type="button" class="consent-open" data-consent-open>Privacy choices</button></nav></div>
+      <nav class="legal-nav" aria-label="Legal"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/disclaimer.html">Disclaimer</a><a href="/patient-rights.html">Patient rights</a><a href="/grievance.html">Grievance</a><button type="button" class="consent-open" data-consent-open>Privacy choices</button></nav>
+      <p class="footer-credit">Designed and developed with <span aria-label="love">❤</span> by <a href="https://naazailabs.com" target="_blank" rel="noopener">Naaz AI Labs</a></p></div>
   </footer>
   <nav class="mbar" aria-label="Quick actions">
     <a href="${te(e.emergency)}" class="mbar-em">${M(`phone`)}<span>Emergency</span></a>

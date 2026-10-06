@@ -21,6 +21,7 @@ export async function createDoctorTemplate(input: DoctorTemplateInput) {
 }
 
 export async function deleteDoctorTemplate(id: string) {
-  await prisma.doctorTemplate.delete({ where: { id } })
+  const user = await getCurrentUser()
+  await prisma.doctorTemplate.deleteMany({ where: user.role === "ADMIN" ? { id } : { id, doctorId: user.id } })
   revalidatePath("/templates")
 }

@@ -11,6 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -86,10 +87,12 @@ export function Header({ user }: { user: { name: string; role: string } }) {
           }
         />
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>
-            <p className="font-medium">{user.name}</p>
-            <p className="text-xs font-normal text-muted-foreground">{user.role.replace("_", " ")}</p>
-          </DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>
+              <p className="font-medium">{user.name}</p>
+              <p className="text-xs font-normal text-muted-foreground">{user.role.replace("_", " ")}</p>
+            </DropdownMenuLabel>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem disabled>Account settings</DropdownMenuItem>
           <DropdownMenuItem onClick={() => logout()} className="text-destructive">

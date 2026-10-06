@@ -56,7 +56,7 @@ export default async function InventoryAlertsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border overflow-hidden">
+          <div className="rounded-lg border overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-muted/50 text-xs uppercase text-muted-foreground font-semibold border-b">
                 <tr>
@@ -119,7 +119,7 @@ export default async function InventoryAlertsPage() {
                         <td className="px-4 py-3 text-xs text-muted-foreground">
                           {format(new Date(alert.updatedAt), "dd MMM, HH:mm")}
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="min-w-[200px] px-4 py-3 text-right">
                           <AlertActionButtons alert={alert} isAdmin={isAdmin} />
                         </td>
                       </tr>
@@ -142,7 +142,7 @@ export default async function InventoryAlertsPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="rounded-lg border overflow-hidden">
+            <div className="rounded-lg border overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead className="bg-muted/50 text-xs uppercase text-muted-foreground font-semibold border-b">
                   <tr>

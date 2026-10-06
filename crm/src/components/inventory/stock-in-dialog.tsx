@@ -61,14 +61,18 @@ export function StockInDialog({ item, trigger }: StockInDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger ? (trigger as any) : undefined}>
-        {!trigger && (
-          <Button variant="outline" size="sm" className="gap-1 text-xs">
-            <ArrowDownToLine className="h-3.5 w-3.5 text-emerald-600" />
-            Stock In
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger ? (
+            (trigger as React.ReactElement)
+          ) : (
+            <Button variant="outline" size="sm" className="gap-1 text-xs">
+                        <ArrowDownToLine className="h-3.5 w-3.5 text-emerald-600" />
+                        Stock In
+                      </Button>
+          )
+        }
+      />
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

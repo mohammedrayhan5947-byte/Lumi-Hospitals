@@ -14,6 +14,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -108,7 +109,7 @@ export function SoapNoteEditor({
             <DropdownMenu>
               <DropdownMenuTrigger render={<Button type="button" size="sm" variant="outline" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />Template</Button>} />
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Insert template</DropdownMenuLabel>
+                <DropdownMenuGroup><DropdownMenuLabel>Insert template</DropdownMenuLabel></DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 {templates.map((t) => (
                   <DropdownMenuItem key={t.id} onClick={() => applyTemplate(t)}>{t.name}</DropdownMenuItem>

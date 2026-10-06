@@ -126,7 +126,7 @@ export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavi
         <LumiMark className="h-9 w-9 shrink-0" />
         <LumiWordmark subtitle={role === "ADMIN" ? "Admin CRM" : "Reception Desk"} />
       </div>
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-4">
+      <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-4 px-3 space-y-4">
         {visibleGroups.map((group) => (
           <div key={group.label} className="space-y-1">
             <p className={cn("flex items-center gap-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide", group.text)}>
@@ -167,7 +167,7 @@ export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavi
 
 export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
   return (
-    <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r bg-background">
+    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 self-start flex-col border-r bg-background lg:flex">
       <NavPanel role={role} />
     </aside>
   )

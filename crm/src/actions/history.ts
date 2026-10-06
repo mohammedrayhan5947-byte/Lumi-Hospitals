@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { getCurrentUser } from "@/lib/auth"
 import {
   medicalHistorySchema,
   familyHistorySchema,
@@ -20,6 +21,7 @@ function parseDate(value?: string) {
 // ── Medical history ─────────────────────────────────────────────────────
 
 export async function addMedicalHistory(patientId: string, input: MedicalHistoryInput) {
+  await getCurrentUser()
   const data = medicalHistorySchema.parse(input)
   await prisma.medicalHistory.create({
     data: { patientId, description: data.description, occurredOn: parseDate(data.occurredOn), notes: data.notes || null },
@@ -28,6 +30,7 @@ export async function addMedicalHistory(patientId: string, input: MedicalHistory
 }
 
 export async function deleteMedicalHistory(patientId: string, id: string) {
+  await getCurrentUser()
   await prisma.medicalHistory.delete({ where: { id } })
   revalidatePath(`/patients/${patientId}`)
 }
@@ -35,12 +38,14 @@ export async function deleteMedicalHistory(patientId: string, id: string) {
 // ── Family history ──────────────────────────────────────────────────────
 
 export async function addFamilyHistory(patientId: string, input: FamilyHistoryInput) {
+  await getCurrentUser()
   const data = familyHistorySchema.parse(input)
   await prisma.familyHistoryEntry.create({ data: { ...data, patientId } })
   revalidatePath(`/patients/${patientId}`)
 }
 
 export async function deleteFamilyHistory(patientId: string, id: string) {
+  await getCurrentUser()
   await prisma.familyHistoryEntry.delete({ where: { id } })
   revalidatePath(`/patients/${patientId}`)
 }
@@ -48,6 +53,7 @@ export async function deleteFamilyHistory(patientId: string, id: string) {
 // ── Surgical history ────────────────────────────────────────────────────
 
 export async function addSurgicalHistory(patientId: string, input: SurgicalHistoryInput) {
+  await getCurrentUser()
   const data = surgicalHistorySchema.parse(input)
   await prisma.surgicalHistory.create({
     data: { ...data, patientId, surgeryDate: parseDate(data.surgeryDate) },
@@ -56,6 +62,7 @@ export async function addSurgicalHistory(patientId: string, input: SurgicalHisto
 }
 
 export async function deleteSurgicalHistory(patientId: string, id: string) {
+  await getCurrentUser()
   await prisma.surgicalHistory.delete({ where: { id } })
   revalidatePath(`/patients/${patientId}`)
 }
@@ -63,6 +70,7 @@ export async function deleteSurgicalHistory(patientId: string, id: string) {
 // ── Current medications ─────────────────────────────────────────────────
 
 export async function addCurrentMedication(patientId: string, input: CurrentMedicationInput) {
+  await getCurrentUser()
   const data = currentMedicationSchema.parse(input)
   await prisma.currentMedication.create({
     data: { ...data, patientId, startDate: parseDate(data.startDate), endDate: parseDate(data.endDate) },
@@ -71,6 +79,7 @@ export async function addCurrentMedication(patientId: string, input: CurrentMedi
 }
 
 export async function updateMedicationStatus(patientId: string, id: string, status: "ACTIVE" | "STOPPED") {
+  await getCurrentUser()
   await prisma.currentMedication.update({
     where: { id },
     data: { status, endDate: status === "STOPPED" ? new Date() : null },
@@ -79,6 +88,7 @@ export async function updateMedicationStatus(patientId: string, id: string, stat
 }
 
 export async function deleteCurrentMedication(patientId: string, id: string) {
+  await getCurrentUser()
   await prisma.currentMedication.delete({ where: { id } })
   revalidatePath(`/patients/${patientId}`)
 }
@@ -86,6 +96,7 @@ export async function deleteCurrentMedication(patientId: string, id: string) {
 // ── Aggregate for Clinical History tab ─────────────────────────────────
 
 export async function getClinicalHistory(patientId: string) {
+  await getCurrentUser()
   const [medicalHistory, familyHistory, surgicalHistory, currentMedications] = await Promise.all([
     prisma.medicalHistory.findMany({ where: { patientId }, orderBy: { createdAt: "desc" } }),
     prisma.familyHistoryEntry.findMany({ where: { patientId }, orderBy: { createdAt: "desc" } }),

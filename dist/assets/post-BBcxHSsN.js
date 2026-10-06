@@ -1,4 +1,4 @@
-import{C as e,D as t,I as n,L as r,M as i,O as a,Q as o,R as s,S as c,V as l,W as u,k as d,t as f,y as p,z as m}from"./core-CdQdIRLX.js";var h=document.querySelector(`main`)?.dataset.id||n.get(`id`),g=o.find(e=>e.id===h)||o[0],_=e(g.dept),v=e=>e.toLowerCase().replace(/[^a-z0-9]+/g,`-`).replace(/^-|-$/g,``),y=g.body.filter(e=>e.startsWith(`## `)).map(e=>e.slice(3)),b=()=>g.body.map((e,t)=>e.startsWith(`## `)?`<h2 id="${v(e.slice(3))}">${a(e.slice(3))}</h2>`:`<p${t===0?` class="ps-lede"`:``}>${a(e)}</p>`).join(``),x=()=>`
+import{C as e,D as t,I as n,L as r,M as i,O as a,Q as o,R as s,S as c,V as l,W as u,k as d,t as f,y as p,z as m}from"./core-2HSPU3Fo.js";var h=document.querySelector(`main`)?.dataset.id||n.get(`id`),g=o.find(e=>e.id===h)||o[0],_=e(g.dept),v=e=>e.toLowerCase().replace(/[^a-z0-9]+/g,`-`).replace(/^-|-$/g,``),y=g.body.filter(e=>e.startsWith(`## `)).map(e=>e.slice(3)),b=()=>g.body.map((e,t)=>e.startsWith(`## `)?`<h2 id="${v(e.slice(3))}">${a(e.slice(3))}</h2>`:`<p${t===0?` class="ps-lede"`:``}>${a(e)}</p>`).join(``),x=()=>`
 <header class="ps-hero" data-instant>
   <div class="page-hero-glow"></div>
   <div class="container">

@@ -35,7 +35,7 @@ export function WalkInDialog({ doctors }: { doctors: Doctor[] }) {
           </Button>
         }
       />
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Register Walk-in</DialogTitle>
         </DialogHeader>
@@ -75,10 +75,10 @@ export function WalkInDialog({ doctors }: { doctors: Doctor[] }) {
               value={doctorId}
               onValueChange={(value) => setDoctorId(value ?? "")}
             >
-              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-auto min-h-8 w-full items-start whitespace-normal py-1.5 text-left data-[size=default]:h-auto *:data-[slot=select-value]:line-clamp-none"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {doctors.map((d) => (
-                  <SelectItem key={d.id} value={d.id}>
+                  <SelectItem key={d.id} value={d.id} className="whitespace-normal">
                     Dr. {d.name}{d.specialization ? ` — ${d.specialization}` : ""}
                   </SelectItem>
                 ))}

@@ -428,7 +428,7 @@ export async function getQueue() {
   const appointments = await prisma.appointment.findMany({
     where: {
       scheduledAt: { gte: startOfDay(today), lte: endOfDay(today) },
-      status: { in: ["PENDING", "CONFIRMED", "ARRIVED", "IN_CONSULTATION"] },
+      status: { in: ["ARRIVED", "IN_CONSULTATION"] },
     },
     include: {
       patient: true,
@@ -491,9 +491,9 @@ export async function deleteWaitingListEntry(id: string) {
   revalidatePath("/waiting-list")
 }
 
-export async function getWaitingList() {
+export async function getWaitingList(status?: "WAITING" | "NOTIFIED" | "CONVERTED" | "EXPIRED") {
   return prisma.waitingListEntry.findMany({
-    where: { status: "WAITING" },
+    where: status ? { status } : {},
     include: {
       patient: true,
       doctor: true,

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma"
 import { formatCurrency } from "@/lib/format"
 import { appointmentStatusLabels, appointmentTypeLabels, commChannelLabels } from "@/lib/labels"
+import { getCurrentUser } from "@/lib/auth"
 
 export type TimelineEventType =
   | "APPOINTMENT"
@@ -28,6 +29,7 @@ export type TimelineEvent = {
 }
 
 export async function getPatientTimeline(patientId: string): Promise<TimelineEvent[]> {
+  await getCurrentUser()
   const [
     appointments,
     prescriptions,

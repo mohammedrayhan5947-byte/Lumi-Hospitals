@@ -384,3 +384,8 @@ html[data-mode="dark"] .pkg.is-featured .muted, html[data-mode="dark"] .pkg.is-f
   .mnav li a { min-height: 56px; }
   .acc-btn { min-height: 56px; }
 }
+
+.footer-credit { flex-basis: 100%; margin: 14px 0 0; text-align: center; font-size: clamp(1.15rem, 2.6vw, 1.75rem); font-weight: 600; letter-spacing: -.01em; line-height: 1.3; }
+.footer-credit span { color: #ff5a6e; }
+.footer-credit a { color: inherit; text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; }
+.footer-credit a:hover { color: var(--accent, #7fb0ff); }

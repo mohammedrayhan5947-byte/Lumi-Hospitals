@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { UserPlus, Repeat, CalendarClock, Users2, AlertTriangle, CheckSquare } from "lucide-react"
 import { getDashboardStats, getRecentPatients } from "@/actions/dashboard"
+import { LiveRefresh } from "@/components/dashboard/live-refresh"
 import { StatCard } from "@/components/dashboard/stat-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,9 +14,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Today at a glance across Lumi Hospital.</p>
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Today at a glance across Lumi Hospital.</p>
+        </div>
+        <LiveRefresh />
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">

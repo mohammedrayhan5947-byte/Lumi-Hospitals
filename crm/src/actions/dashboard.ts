@@ -2,8 +2,10 @@
 
 import { startOfDay, endOfDay } from "date-fns"
 import { prisma } from "@/lib/prisma"
+import { getCurrentUser } from "@/lib/auth"
 
 export async function getDashboardStats() {
+  await getCurrentUser()
   const now = new Date()
   const dayStart = startOfDay(now)
   const dayEnd = endOfDay(now)
@@ -80,6 +82,7 @@ export async function getDashboardStats() {
 }
 
 export async function getRecentPatients(limit = 8) {
+  await getCurrentUser()
   return prisma.patient.findMany({
     orderBy: { createdAt: "desc" },
     take: limit,
