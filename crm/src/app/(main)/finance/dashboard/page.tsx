@@ -6,6 +6,7 @@ import { TrendBars } from "@/components/finance/trend-bars"
 import { BarBreakdown } from "@/components/finance/bar-breakdown"
 import { formatCurrency } from "@/lib/format"
 import { paymentMethodLabels } from "@/lib/labels"
+import { PrintButton } from "@/components/shared/print-button"
 
 export default async function FinanceDashboardPage() {
   const stats = await getRevenueDashboard()
@@ -21,9 +22,12 @@ export default async function FinanceDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
         <h1 className="text-2xl font-semibold tracking-tight">Finance Dashboard</h1>
         <p className="text-sm text-muted-foreground">Revenue and collections overview.</p>
+      </div>
+        <PrintButton />
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

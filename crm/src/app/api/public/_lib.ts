@@ -88,7 +88,7 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
         scheduledAt: { gte: dayStart, lte: dayEnd },
         status: { in: [...ACTIVE_STATUSES] },
       },
-      select: { scheduledAt: true },
+      select: { scheduledAt: true, durationMinutes: true, startedAt: true, status: true },
     }),
   ])
 
@@ -96,6 +96,14 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
 
   const bookedTimes = new Set(existingAppointments.map((a) => a.scheduledAt.getTime()))
   const now = new Date()
+  // A checked-in or running consultation keeps the doctor busy until max(scheduled end, now).
+  const busy = existingAppointments
+    .filter((a) => a.status === "IN_CONSULTATION" || a.status === "ARRIVED")
+    .map((a) => {
+      const schedEnd = addMinutes(a.scheduledAt, a.durationMinutes)
+      const start = a.status === "IN_CONSULTATION" && a.startedAt && a.startedAt < a.scheduledAt ? a.startedAt : a.scheduledAt
+      return { start, end: schedEnd < now ? now : schedEnd }
+    })
   const slots: Date[] = []
 
   for (const availability of availabilities) {
@@ -103,10 +111,12 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
     const end = parse(availability.endTime, "HH:mm", date)
     let cursor = start
     while (isBefore(cursor, end)) {
-      if (!bookedTimes.has(cursor.getTime()) && (!isToday(date) || isBefore(now, cursor))) {
+      const slotEnd = addMinutes(cursor, availability.slotDurationMinutes)
+      const overlapsBusy = busy.some((w) => cursor < w.end && slotEnd > w.start)
+      if (!bookedTimes.has(cursor.getTime()) && !overlapsBusy && (!isToday(date) || isBefore(now, cursor))) {
         slots.push(new Date(cursor))
       }
-      cursor = addMinutes(cursor, availability.slotDurationMinutes)
+      cursor = slotEnd
     }
   }
 

@@ -11,12 +11,13 @@ export const BIZ = {
   short: "Lumi",
   tagline: "Towards Healthy Life",
   intro: "A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock.",
-  phone: "+91 00000 00000",        // TODO reception
-  emergency: "+91 00000 00001",    // TODO 24/7 emergency & ambulance
-  whatsapp: "910000000000",        // TODO digits only, with country code
-  email: "care@lumihospital.in",   // TODO
-  address: "Address line, Area, City, State PIN", // TODO
-  mapQuery: "Lumi Hospital",       // TODO exact Google Maps query or place name
+  phone: "080 2990 1022",           // landline / reception
+  emergency: "080 2990 1022",       // 24/7 emergency & ambulance (same landline)
+  mobile: "+91 63644 67373",       // mobile / WhatsApp
+  whatsapp: "916364467373",        // digits only, with country code
+  email: "lumihospitals@gmail.com",
+  address: "Ilyas Nagar, Banashankari, Bengaluru, Karnataka 560111", // as on the Google Business Profile
+  mapQuery: "Lumi Hospital, Ilyas Nagar, Banashankari, Bengaluru, Karnataka 560111",
   mapsLink: "",                    // TODO Google Maps share link
   hours: {
     opd: "Mon–Sat · 8:00 AM – 8:00 PM",   // TODO
@@ -46,6 +47,8 @@ export const BIZ = {
     { value: 10, suffix: "", label: "Specialities" }
   ],
   accreditations: [],              // e.g. ["NABH", "NABL"] — only real ones
+  // Optional official logos: drop files in public/img/insurers/ and map the name here, e.g. "Star Health": "/img/insurers/star-health.svg"
+  insurerLogos: {},
   insurers: ["Star Health", "HDFC ERGO", "ICICI Lombard", "Niva Bupa", "Care Health", "Aditya Birla", "Bajaj Allianz", "Tata AIG", "Medi Assist (TPA)", "CGHS", "ECHS"] // TODO confirm tie-ups
 };
 
@@ -107,6 +110,16 @@ export const DEPARTMENTS = [
     about: "Diagnostic and therapeutic endoscopy, liver clinics and day-care procedures, so you're usually home the same day.",
     services: ["Endoscopy & colonoscopy", "ERCP", "Liver clinic", "Acid reflux & IBS clinic", "GI bleeding care", "Nutrition support"],
     conditions: ["Acidity & GERD", "Fatty liver", "Hepatitis", "Gallstones", "IBS", "Ulcers"] },
+  { id: "dental", packages: [], name: "Dental Care", icon: "stethoscope", img: "/img/stock/dept-general-medicine.webp",
+    summary: "Check-ups, fillings, root canals and smile care.",
+    about: "Gentle dental care for the whole family, from routine check-ups and cleaning to root canals, extractions and restorative work.",
+    services: ["Dental check-up & cleaning", "Fillings & root canal", "Extractions", "Crowns & bridges", "Paediatric dentistry", "Dental X-ray"],
+    conditions: ["Toothache", "Cavities", "Gum disease", "Sensitivity", "Missing teeth", "Bad breath"] },
+  { id: "oncology", packages: [], name: "Cancer Care", icon: "scan", img: "/img/stock/dept-diagnostics.webp",
+    summary: "Screening, diagnosis and cancer treatment support.",
+    about: "Early screening, accurate diagnosis and coordinated cancer care, with surgery, day-care chemotherapy and supportive care under one roof.",
+    services: ["Cancer screening", "Biopsy & diagnosis", "Day-care chemotherapy", "Oncology surgery", "Palliative & supportive care", "Counselling"],
+    conditions: ["Breast cancer", "Oral cancer", "Cervical cancer", "Lump evaluation", "Follow-up care", "Second opinion"] },
   { id: "diagnostics", packages: ["executive", "essential"], name: "Diagnostics & Imaging", icon: "scan", img: "/img/stock/dept-diagnostics.webp",
     summary: "24/7 lab, CT, MRI, X-ray and ultrasound.",
     about: "An in-house laboratory and imaging with digital reports, often on your phone within hours.",
@@ -167,8 +180,18 @@ export const JOURNEY = [
 ];
 
 /* Only real, consented reviews. Section hides itself while empty. */
+/* Google Business Profile summary (as shown on Google). */
+export const GOOGLE_RATING = { score: 4.8, count: 18 };
 export const TESTIMONIALS = [
-  // { quote: "...", name: "First name L.", context: "Knee replacement, 2026" }
+  // Verbatim reviews from the hospital's Google Business Profile (no edits).
+  { name: "tabraiz baig", context: "Google review", rating: 5, quote: "Very good hospital. Doctors gave immediate response and excellent treatment. Staff is very caring and helpful. Highly recommended Lumi Hospital." },
+  { name: "Saniya Firdouse", context: "Google review", rating: 5, quote: "Hospital and service is the best dr zameer ahmed and all the staffs members where also soo my personal experience was the best inshallah going ahead i will consult all my queries in lumi hospital it self" },
+  { name: "vikas tyagi", context: "Google review", rating: 5, quote: "Dr .zameerudin is very good Doctor,very helpful,very professional and best surgeon in Bangalore" },
+  { name: "Sammy khan", context: "Google review", rating: 5, quote: "Zameer Doctor is very good and hospital is very clean and hygienic... had peaceful and best experience" },
+  { name: "IRSHAD SHARIFF", context: "Google review", rating: 5, quote: "Excellent & Affordable treatment" },
+  { name: "ASMA FAROOQ", context: "Google review", rating: 5, quote: "Best and affordable treatment" },
+  { name: "Heeba Ayesha", context: "Google review", rating: 5, quote: "Professional treatment" },
+  { name: "Cowsar Pasha", context: "Google review", rating: 5, quote: "Easy accessibility" }
 ];
 
 export const FAQ = [

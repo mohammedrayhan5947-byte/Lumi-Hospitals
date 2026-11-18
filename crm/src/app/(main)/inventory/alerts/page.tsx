@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AlertActionButtons } from "@/components/inventory/alert-action-buttons"
+import { PrintButton } from "@/components/shared/print-button"
 
 export default async function InventoryAlertsPage() {
   const user = await getCurrentUser()
@@ -40,6 +41,7 @@ export default async function InventoryAlertsPage() {
             </p>
           </div>
         </div>
+        <PrintButton />
       </div>
 
       {/* Active Alerts */}

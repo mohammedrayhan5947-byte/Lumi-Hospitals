@@ -179,3 +179,49 @@ export async function getPatientBillingSummary(patientId: string) {
   ])
   return toPlain({ bills, advances, refunds })
 }
+
+export type CollectionRange = "today" | "week" | "month" | "all"
+
+/** Payments received in the period, grouped by method (successful payments only). */
+export async function getCollectionSummary(range: CollectionRange = "today") {
+  await getCurrentUser()
+  const now = new Date()
+  const from = new Date(now)
+  from.setHours(0, 0, 0, 0)
+  if (range === "week") from.setDate(from.getDate() - ((from.getDay() + 6) % 7)) // Monday
+  if (range === "month") from.setDate(1)
+  if (range === "all") from.setFullYear(2000)
+
+  const rows = await prisma.payment.groupBy({
+    by: ["method"],
+    where: { status: "SUCCESS", paidAt: { gte: from, lte: now } },
+    _sum: { amount: true },
+    _count: true,
+  })
+  const pick = (m: string) => {
+    const r = rows.find((x) => x.method === m)
+    return { amount: Number(r?._sum.amount ?? 0), count: r?._count ?? 0 }
+  }
+  const upi = pick("UPI")
+  const cash = pick("CASH")
+  const other = rows
+    .filter((r) => r.method !== "UPI" && r.method !== "CASH")
+    .reduce((a, r) => ({ amount: a.amount + Number(r._sum.amount ?? 0), count: a.count + r._count }), { amount: 0, count: 0 })
+  return { upi, cash, other, total: upi.amount + cash.amount + other.amount, from }
+}
+
+/** Every payment received (newest first), with patient and bill, for the Transactions table. */
+export async function getTransactions(range: CollectionRange = "today", method?: string) {
+  await getCurrentUser()
+  const from = new Date()
+  from.setHours(0, 0, 0, 0)
+  if (range === "week") from.setDate(from.getDate() - ((from.getDay() + 6) % 7))
+  if (range === "month") from.setDate(1)
+  if (range === "all") from.setFullYear(2000)
+  return prisma.payment.findMany({
+    where: { paidAt: { gte: from }, ...(method ? { method: method as never } : {}) },
+    include: { patient: true, bill: { select: { billNumber: true } }, receivedBy: { select: { name: true } } },
+    orderBy: { paidAt: "desc" },
+    take: 200,
+  })
+}

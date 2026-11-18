@@ -58,8 +58,8 @@ const cards = () => {
   </a>
   <a class="tile is-link ct-card" href="${wa("Hi, I have a question for " + BIZ.name + ".")}" target="_blank" rel="noopener" data-reveal>
     <span class="ic-badge">${icon("chat")}</span>
-    <span class="label">WhatsApp</span>
-    <b>Message our care team</b><span class="corner" aria-hidden="true">${icon("arrowUpRight")}</span>
+    <span class="label">Mobile &amp; WhatsApp</span>
+    <b>${esc(BIZ.mobile)}</b><span class="corner" aria-hidden="true">${icon("arrowUpRight")}</span>
   </a>
   <a class="tile is-link ct-card" href="mailto:${BIZ.email}" data-reveal>
     <span class="ic-badge">${icon("mail")}</span>

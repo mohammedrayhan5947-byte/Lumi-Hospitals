@@ -14,6 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { TokenChip } from "@/components/appointments/token-chip"
+import { PrintTokenButton } from "@/components/appointments/print-token"
+import { formatToken } from "@/lib/tokens"
 import { initials, patientDisplayName, formatRelative } from "@/lib/format"
 import { appointmentTypeLabels } from "@/lib/labels"
 import { startConsultation, completeConsultation, markNoShow, type getTodayQueue } from "@/actions/appointments"
@@ -32,8 +35,31 @@ export function QueueBoard({ queue, doctors }: { queue: Queue; doctors: Doctor[]
     grouped.get(key)!.push(entry)
   }
 
+  const serving = filtered.filter((q) => q.status === "IN_CONSULTATION")
+  const waiting = filtered.filter((q) => q.status !== "IN_CONSULTATION")
+  const nextUp = waiting[0]
+  const multi = new Set(filtered.map((q) => q.doctorId)).size > 1
+  const label = (q: Queue[number]) =>
+    multi ? `${formatToken(q.tokenNumber)} · Dr. ${q.doctor.name.split(" ").slice(-1)[0]}` : formatToken(q.tokenNumber)
+
   return (
     <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-xl border bg-emerald-50 p-3 dark:bg-emerald-950/30">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Now serving</p>
+          <p className="mt-1 font-mono text-xl font-bold text-emerald-700 dark:text-emerald-400">
+            {serving.length ? serving.map(label).join(", ") : "—"}
+          </p>
+        </div>
+        <div className="rounded-xl border bg-amber-50 p-3 dark:bg-amber-950/30">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Next up</p>
+          <p className="mt-1 font-mono text-xl font-bold text-amber-700 dark:text-amber-400">{nextUp ? label(nextUp) : "—"}</p>
+        </div>
+        <div className="rounded-xl border p-3">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Waiting</p>
+          <p className="mt-1 text-2xl font-bold">{waiting.length}</p>
+        </div>
+      </div>
       <Select
         items={{ ALL: "All doctors", ...Object.fromEntries(doctors.map((d) => [d.id, `Dr. ${d.name}`])) }}
         value={doctorFilter}
@@ -75,7 +101,8 @@ function QueueRow({ entry }: { entry: Queue[number] }) {
   const isInProgress = entry.status === "IN_CONSULTATION"
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border p-3">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border p-3">
+      <TokenChip n={entry.tokenNumber} />
       <Avatar className="h-9 w-9 shrink-0">
         <AvatarFallback className="text-sm font-semibold">{initials(patientDisplayName(entry.patient))}</AvatarFallback>
       </Avatar>
@@ -88,7 +115,8 @@ function QueueRow({ entry }: { entry: Queue[number] }) {
         </p>
       </div>
       <Badge variant={isInProgress ? "default" : "secondary"}>{isInProgress ? "In Progress" : "Waiting"}</Badge>
-      <div className="flex gap-1 shrink-0">
+      <div className="flex flex-wrap gap-1 shrink-0">
+        <PrintTokenButton token={entry.tokenNumber} patient={patientDisplayName(entry.patient)} doctor={entry.doctor.name} />
         {!isInProgress && (
           <Button
             size="sm"

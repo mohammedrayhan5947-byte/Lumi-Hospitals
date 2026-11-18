@@ -45,7 +45,7 @@ const SECTIONS = [
 
   { id: "insurance", label: "Insurance & cashless", title: "Insurance &amp; <em>cashless</em>", body: () => `
     <p class="pg-intro">We work with leading insurers, TPAs and government schemes. Our insurance desk handles pre-authorisation so you can focus on getting better.</p>
-    <ul class="pg-insurers" aria-label="Insurance partners">${BIZ.insurers.map(n => `<li>${esc(n)}</li>`).join("")}</ul>
+    <ul class="pg-insurers" aria-label="Insurance partners">${BIZ.insurers.map(n => `<li>${BIZ.insurerLogos[n] ? `<img src="${BIZ.insurerLogos[n]}" alt="${esc(n)}" loading="lazy" height="32">` : esc(n)}</li>`).join("")}</ul>
     ${steps([
       ["Show your card", "Share your policy card and photo ID at the insurance desk on arrival, or as soon as you can after an emergency."],
       ["Pre-authorisation", "We send your doctor's plan to the insurer and keep you updated on approval."],

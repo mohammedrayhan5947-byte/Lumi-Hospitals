@@ -7,28 +7,35 @@ import { Button } from "@/components/ui/button"
 import { formatCurrency, formatDateTime, patientDisplayName } from "@/lib/format"
 import { paymentMethodLabels } from "@/lib/labels"
 import { CLINIC_INFO } from "@/lib/hospital-info"
+import { PdfActions } from "@/components/shared/pdf-actions"
+import { LetterheadHeader, LetterheadFooter } from "@/components/shared/letterhead"
 import type { getReceipt } from "@/actions/payments"
 
 type Payment = NonNullable<Awaited<ReturnType<typeof getReceipt>>>
 
 export function ReceiptView({ payment }: { payment: Payment }) {
   return (
-    <div className="mx-auto max-w-md space-y-4">
+    <div className="mx-auto max-w-md space-y-4 print:max-w-none">
       <div className="flex items-center justify-between print:hidden">
         {payment.billId ? (
           <Link href={`/billing/${payment.billId}`} className="text-sm text-muted-foreground hover:text-foreground">
             ← Back to bill
           </Link>
         ) : <span />}
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.print()}>
-          <Printer className="h-3.5 w-3.5" />
-          Print
-        </Button>
+        <div className="flex items-center gap-1.5">
+          <PdfActions kind="receipt" id={payment.id} />
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.print()}>
+            <Printer className="h-3.5 w-3.5" />
+            Print page
+          </Button>
+        </div>
       </div>
 
-      <Card>
+      <LetterheadHeader />
+      <LetterheadFooter />
+      <Card className="print:border-0 print:shadow-none print:ring-0 print:pb-[34mm]">
         <CardContent className="pt-6 space-y-4 text-sm">
-          <div className="text-center">
+          <div className="text-center print:hidden">
             <p className="font-semibold">{CLINIC_INFO.name}</p>
             <p className="text-xs text-muted-foreground">{CLINIC_INFO.address}</p>
           </div>

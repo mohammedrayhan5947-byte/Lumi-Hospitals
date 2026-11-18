@@ -1,5 +1,6 @@
 "use client"
 
+import { SectionPdfActions, PdfRowActions } from "@/components/shared/pdf-row-actions"
 import Link from "next/link"
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
@@ -40,26 +41,32 @@ export function PatientBillingTab({ patientId, summary }: { patientId: string; s
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Bills</CardTitle>
+          <div className="flex flex-wrap items-center gap-2">
+          {summary.bills.length > 0 && <SectionPdfActions kind="bill" label="all" filters={{ patientId }} />}
           <Button
             size="sm"
             className="gap-1.5"
             nativeButton={false}
             render={<Link href={`/billing/new?patientId=${patientId}`}><Plus className="h-3.5 w-3.5" />New Bill</Link>}
           />
+          </div>
         </CardHeader>
         <CardContent className="space-y-2">
           {summary.bills.length === 0 && <p className="text-sm text-muted-foreground">No bills yet.</p>}
           {summary.bills.map((bill) => (
-            <Link key={bill.id} href={`/billing/${bill.id}`} className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted transition-colors">
-              <div>
+            <div key={bill.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3 hover:bg-muted transition-colors">
+              <Link href={`/billing/${bill.id}`}>
                 <p className="text-sm font-medium">{bill.billNumber}</p>
                 <p className="text-xs text-muted-foreground">{formatDate(bill.issuedAt)}</p>
+              </Link>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-sm font-medium">{formatCurrency(Number(bill.netAmount))}</p>
+                  <Badge variant="secondary" className={billStatusColors[bill.status]}>{billStatusLabels[bill.status]}</Badge>
+                </div>
+                <PdfRowActions kind="bill" id={bill.id} />
               </div>
-              <div className="text-right">
-                <p className="text-sm font-medium">{formatCurrency(Number(bill.netAmount))}</p>
-                <Badge variant="secondary" className={billStatusColors[bill.status]}>{billStatusLabels[bill.status]}</Badge>
-              </div>
-            </Link>
+            </div>
           ))}
         </CardContent>
       </Card>

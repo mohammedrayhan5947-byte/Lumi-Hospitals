@@ -113,8 +113,8 @@ html[data-mode="dark"] .jcard:nth-child(4) p { color: color-mix(in oklab, var(--
 /* Big CTA */
 .big-cta { position: relative; border-radius: var(--r-xl); overflow: hidden; background: var(--hero-bg); color: #fff; padding: clamp(40px, 7vw, 100px); isolation: isolate; }
 .big-cta-photo { position: absolute; inset: 0; z-index: -2; }
-.big-cta-photo img { width: 100%; height: 100%; object-fit: cover; opacity: .28; filter: grayscale(.3); }
-.big-cta-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--hero-bg) 30%, color-mix(in oklab, var(--hero-bg) 40%, transparent)); }
+.big-cta-photo img { width: 100%; height: 100%; object-fit: cover; opacity: 1; filter: none; }
+.big-cta-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--hero-bg) 82%, transparent) 0%, color-mix(in oklab, var(--hero-bg) 50%, transparent) 40%, color-mix(in oklab, var(--hero-bg) 8%, transparent) 80%); }
 .big-cta h2 { color: #fff; font-size: clamp(2.3rem, 5.2vw, 4.8rem); max-width: 15ch; }
 .big-cta h2 em { color: color-mix(in oklab, var(--accent) 45%, #fff); }
 .big-cta p { color: rgba(255, 255, 255, .72); max-width: 44ch; font-size: var(--fs-lead); }
@@ -202,8 +202,8 @@ html[data-mode="dark"] .jcard:nth-child(4) p { color: color-mix(in oklab, var(--
 /* Big CTA */
 .big-cta { position: relative; border-radius: var(--r-xl); overflow: hidden; background: var(--hero-bg); color: #fff; padding: clamp(40px, 7vw, 100px); isolation: isolate; }
 .big-cta-photo { position: absolute; inset: 0; z-index: -2; }
-.big-cta-photo img { width: 100%; height: 100%; object-fit: cover; opacity: .28; filter: grayscale(.3); }
-.big-cta-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--hero-bg) 30%, color-mix(in oklab, var(--hero-bg) 40%, transparent)); }
+.big-cta-photo img { width: 100%; height: 100%; object-fit: cover; opacity: 1; filter: none; }
+.big-cta-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--hero-bg) 82%, transparent) 0%, color-mix(in oklab, var(--hero-bg) 50%, transparent) 40%, color-mix(in oklab, var(--hero-bg) 8%, transparent) 80%); }
 .big-cta h2 { color: #fff; font-size: clamp(2.3rem, 5.2vw, 4.8rem); max-width: 15ch; }
 .big-cta h2 em { color: color-mix(in oklab, var(--accent) 45%, #fff); }
 .big-cta p { color: rgba(255, 255, 255, .72); max-width: 44ch; font-size: var(--fs-lead); }
@@ -241,3 +241,7 @@ html[data-mode="dark"] .jcard:nth-child(4) p { color: color-mix(in oklab, var(--
 .hscroll .dept-wm { display: block; position: absolute; right: -14%; bottom: -16%; width: 72%; color: var(--accent); opacity: .07; z-index: -1; transition: transform 1.2s var(--ease), opacity .6s; pointer-events: none; }
 .hscroll .dept-wm .ic { width: 100%; height: auto; stroke-width: .7; }
 .hscroll .dept-card:hover .dept-wm { opacity: .16; transform: rotate(-10deg) scale(1.06); }
+
+.g-stars { color: #f5a623; letter-spacing: 2px; font-size: 1.05rem; line-height: 1; }
+.g-rating { margin: -8px 0 24px; color: var(--muted); font-size: .95rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.g-rating b { color: var(--ink); font-size: 1.15rem; }

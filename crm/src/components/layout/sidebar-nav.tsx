@@ -28,21 +28,24 @@ import {
   HelpCircle,
   Boxes,
   ShieldAlert,
+  FileBarChart,
+  UserCog,
+  Archive,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { canAccess, type Scope } from "@/lib/permissions"
 
 interface NavItem {
   href: string
   label: string
   icon: React.ComponentType<{ className?: string }>
-  adminOnly?: boolean
+  scope: Scope
 }
 
 interface NavGroup {
   label: string
   dot: string
   text: string
-  adminOnly?: boolean
   items: NavItem[]
 }
 
@@ -52,14 +55,14 @@ const navGroups: NavGroup[] = [
     dot: "bg-blue-500",
     text: "text-blue-600 dark:text-blue-400",
     items: [
-      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/patients", label: "Patients", icon: Users },
-      { href: "/appointments", label: "Appointments", icon: CalendarDays },
-      { href: "/queue", label: "Queue", icon: ListOrdered },
-      { href: "/inventory", label: "Inventory", icon: Boxes },
-      { href: "/waiting-list", label: "Waiting List", icon: Clock },
-      { href: "/follow-ups", label: "Follow-ups", icon: CheckSquare },
-      { href: "/communications", label: "Communications", icon: MessageSquare },
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, scope: "dashboard" },
+      { href: "/patients", label: "Patients", icon: Users, scope: "patients" },
+      { href: "/appointments", label: "Appointments", icon: CalendarDays, scope: "appointments" },
+      { href: "/queue", label: "Queue", icon: ListOrdered, scope: "queue" },
+      { href: "/inventory", label: "Inventory", icon: Boxes, scope: "inventory" },
+      { href: "/waiting-list", label: "Waiting List", icon: Clock, scope: "waiting-list" },
+      { href: "/follow-ups", label: "Follow-ups", icon: CheckSquare, scope: "follow-ups" },
+      { href: "/communications", label: "Communications", icon: MessageSquare, scope: "communications" },
     ],
   },
   {
@@ -67,10 +70,12 @@ const navGroups: NavGroup[] = [
     dot: "bg-violet-500",
     text: "text-violet-600 dark:text-violet-400",
     items: [
-      { href: "/appointments/availability", label: "Doctor Availability", icon: CalendarClock },
-      { href: "/templates", label: "Doctor Templates", icon: FileEdit },
-      { href: "/settings/signature", label: "Digital Signature", icon: PenTool },
-      { href: "/audit-logs", label: "Audit Logs", icon: ShieldAlert, adminOnly: true },
+      { href: "/appointments/availability", label: "Doctor Availability", icon: CalendarClock, scope: "schedule" },
+      { href: "/templates", label: "Doctor Templates", icon: FileEdit, scope: "clinical" },
+      { href: "/settings/signature", label: "Digital Signature", icon: PenTool, scope: "clinical" },
+      { href: "/audit-logs", label: "Audit Logs", icon: ShieldAlert, scope: "audit-logs" },
+      { href: "/staff", label: "Staff & Access", icon: UserCog, scope: "staff" },
+      { href: "/documents", label: "Stored Documents", icon: Archive, scope: "documents" },
     ],
   },
   {
@@ -78,45 +83,52 @@ const navGroups: NavGroup[] = [
     dot: "bg-emerald-500",
     text: "text-emerald-600 dark:text-emerald-400",
     items: [
-      { href: "/billing", label: "Billing", icon: Receipt },
-      { href: "/billing/refunds", label: "Refunds", icon: Undo2 },
-      { href: "/finance/dashboard", label: "Finance Dashboard", icon: TrendingUp },
-      { href: "/finance/outstanding", label: "Outstanding Dues", icon: AlertCircle },
-      { href: "/finance/cash-counter", label: "Cash Counter", icon: Wallet },
-      { href: "/finance/expenses", label: "Expenses", icon: Receipt },
-      { href: "/finance/reports", label: "Reports", icon: BarChart3 },
-      { href: "/services", label: "Services", icon: Package },
+      { href: "/billing", label: "Billing", icon: Receipt, scope: "billing" },
+      { href: "/billing/refunds", label: "Refunds", icon: Undo2, scope: "billing" },
+      { href: "/finance/dashboard", label: "Finance Dashboard", icon: TrendingUp, scope: "finance" },
+      { href: "/finance/outstanding", label: "Outstanding Dues", icon: AlertCircle, scope: "finance" },
+      { href: "/finance/cash-counter", label: "Cash Counter", icon: Wallet, scope: "finance" },
+      { href: "/finance/expenses", label: "Expenses", icon: Receipt, scope: "finance" },
+      { href: "/reports", label: "Insights & Reports", icon: FileBarChart, scope: "reports" },
+      { href: "/finance/reports", label: "Financial Reports", icon: BarChart3, scope: "reports" },
+      { href: "/services", label: "Services", icon: Package, scope: "services" },
     ],
   },
   {
     label: "Website",
     dot: "bg-pink-500",
     text: "text-pink-600 dark:text-pink-400",
-    adminOnly: true,
     items: [
-      { href: "/website/content", label: "Site Content", icon: Globe },
-      { href: "/website/reviews", label: "Reviews", icon: MessagesSquare },
-      { href: "/website/faqs", label: "FAQs", icon: HelpCircle },
+      { href: "/website/content", label: "Site Content", icon: Globe, scope: "website" },
+      { href: "/website/reviews", label: "Reviews", icon: MessagesSquare, scope: "website" },
+      { href: "/website/faqs", label: "FAQs", icon: HelpCircle, scope: "website" },
     ],
   },
   {
     label: "Calendar",
     dot: "bg-orange-500",
     text: "text-orange-600 dark:text-orange-400",
-    items: [{ href: "/calendar", label: "Calendar", icon: CalendarCheck2 }],
+    items: [{ href: "/calendar", label: "Calendar", icon: CalendarCheck2, scope: "schedule" }],
   },
 ]
 
 /** Logo + navigation. Shared by the desktop sidebar and the mobile drawer. */
-export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavigate?: () => void }) {
+export function NavPanel({
+  role = "ADMIN",
+  permissions = [],
+  onNavigate,
+}: {
+  role?: string
+  permissions?: string[]
+  onNavigate?: () => void
+}) {
   const pathname = usePathname()
-  const isAdmin = role === "ADMIN"
+  const me = { role, permissions }
 
   const visibleGroups = navGroups
-    .filter((group) => !group.adminOnly || isAdmin)
     .map((group) => ({
       ...group,
-      items: group.items.filter((item) => !item.adminOnly || isAdmin),
+      items: group.items.filter((item) => canAccess(me, item.scope)),
     }))
     .filter((group) => group.items.length > 0)
 
@@ -139,7 +151,7 @@ export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavi
                 (item.href === "/appointments" && pathname.startsWith("/appointments/")) ||
                 (item.href === "/inventory" && pathname.startsWith("/inventory/")) ||
                 (item.href === "/billing" && pathname.startsWith("/billing/") && !pathname.startsWith("/billing/refunds")) ||
-                (!["/appointments", "/billing", "/inventory"].includes(item.href) && item.href.length > 1 && pathname.startsWith(`${item.href}/`))
+                (!["/appointments", "/billing", "/inventory", "/finance/reports", "/reports"].includes(item.href) && item.href.length > 1 && pathname.startsWith(`${item.href}/`))
               const Icon = item.icon
               return (
                 <Link
@@ -165,10 +177,10 @@ export function NavPanel({ role = "ADMIN", onNavigate }: { role?: string; onNavi
   )
 }
 
-export function SidebarNav({ role = "ADMIN" }: { role?: string }) {
+export function SidebarNav({ role = "ADMIN", permissions = [] }: { role?: string; permissions?: string[] }) {
   return (
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 self-start flex-col border-r bg-background lg:flex">
-      <NavPanel role={role} />
+    <aside className="sticky top-0 hidden h-dvh print:!hidden w-64 shrink-0 self-start flex-col border-r bg-background lg:flex">
+      <NavPanel role={role} permissions={permissions} />
     </aside>
   )
 }

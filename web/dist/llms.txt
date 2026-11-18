@@ -1,12 +1,14 @@
 # Lumi Hospital
 
-> Lumi Hospital is a multi-speciality hospital in Bengaluru, Karnataka, India, with 10 specialities, 12 listed consultants, a 24/7 emergency room, ICU, NICU, laboratory and pharmacy. Patients can book consultations and preventive health check-ups online or on WhatsApp.
+> Lumi Hospital is a multi-speciality hospital in Bengaluru, Karnataka, India, with 12 specialities, 12 listed consultants, a 24/7 emergency room, ICU, NICU, laboratory and pharmacy. Patients can book consultations and preventive health check-ups online or on WhatsApp.
 
 A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock. Cashless insurance is accepted with insurers and TPAs including Star Health, HDFC ERGO, ICICI Lombard, Niva Bupa, Care Health, Aditya Birla, Bajaj Allianz, Tata AIG, Medi Assist (TPA), CGHS, ECHS.
 
 ## Contact
-- Location: Bengaluru, Karnataka, India
-- Email: care@lumihospital.in
+- Address: Ilyas Nagar, Banashankari, Bengaluru, Karnataka 560111
+- Reception: 080 2990 1022
+- 24/7 emergency & ambulance: 080 2990 1022
+- Email: lumihospitals@gmail.com
 - OPD hours: Mon–Sat · 8:00 AM – 8:00 PM; Sun · 9:00 AM – 1:00 PM
 - Emergency, ICU, pharmacy and laboratory: open 24 hours
 - Ward visiting hours: 11:00 AM – 1:00 PM · 5:00 PM – 7:00 PM
@@ -22,6 +24,8 @@ A multi-speciality hospital where senior specialists, modern diagnostics and gen
 - [Pulmonology](https://www.lumihospital.in/specialities/pulmonology.html): Asthma, COPD, sleep and lung function.
 - [Nephrology & Urology](https://www.lumihospital.in/specialities/nephro-uro.html): Kidney care, dialysis, stones and prostate.
 - [Gastroenterology](https://www.lumihospital.in/specialities/gastro.html): Digestive, liver and endoscopy services.
+- [Dental Care](https://www.lumihospital.in/specialities/dental.html): Check-ups, fillings, root canals and smile care.
+- [Cancer Care](https://www.lumihospital.in/specialities/oncology.html): Screening, diagnosis and cancer treatment support.
 - [Diagnostics & Imaging](https://www.lumihospital.in/specialities/diagnostics.html): 24/7 lab, CT, MRI, X-ray and ultrasound.
 
 ## Doctors

@@ -64,8 +64,9 @@ body:has(.site-header.is-hidden) .pg-nav { top: 28px; }
 .pg-way:hover > .ic { color: var(--accent); transform: translate(2px, -2px); }
 .pg-way:hover .ic-badge { background: var(--accent); color: var(--on-accent); }
 
-.pg-insurers { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); border-top: 1px solid var(--line-2); border-left: 1px solid var(--line-2); }
-.pg-insurers li { display: flex; align-items: center; min-height: 64px; padding: 12px 18px; border-right: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); font-weight: 550; font-size: .95rem; color: var(--ink); }
+.pg-insurers { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.pg-insurers li { flex: 0 1 calc((100% - 36px) / 4); display: flex; align-items: center; justify-content: center; text-align: center; min-height: 72px; padding: 12px 16px; border: 1px solid var(--line-2); border-radius: var(--r-md, 12px); background: var(--paper-2, transparent); font-weight: 600; font-size: .95rem; color: var(--ink); }
+.pg-insurers li img { max-width: 100%; max-height: 36px; object-fit: contain; }
 .pg-note { display: flex; gap: 12px; align-items: flex-start; margin: 28px 0 0; padding: 16px 18px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--ink-2); font-size: .95rem; }
 .pg-note > .ic { width: 18px; height: 18px; color: var(--accent); margin-top: 3px; }
 #visiting .pg-list { margin-top: 4px; }
@@ -106,8 +107,7 @@ body:has(.site-header.is-hidden) .pg-nav { top: 28px; }
   .pg-split, .pg-facs, .pg-hours, .pg-journey { grid-template-columns: 1fr; }
   .pg-hours > div:nth-child(even) { padding-left: 0; border-left: 0; }
   .pg-jstep + .pg-jstep { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
-  .pg-insurers { grid-template-columns: 1fr 1fr; }
-  .pg-insurers li { min-height: 56px; padding: 10px 14px; font-size: .9rem; }
+  .pg-insurers li { flex-basis: calc((100% - 12px) / 2); min-height: 56px; padding: 10px 14px; font-size: .9rem; }
   .pg-help { grid-template-columns: 1fr; }
   .pg-help .btn { width: 100%; justify-content: space-between; }
   .pg-hero-cta .btn { flex: 1 1 100%; justify-content: space-between; }

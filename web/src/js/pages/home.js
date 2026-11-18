@@ -1,6 +1,6 @@
 import { boot } from "../core.js";
 import "../../css/home.css";
-import { BIZ, DEPARTMENTS, DOCTORS, PACKAGES, POSTS, JOURNEY, TESTIMONIALS, FAQ } from "../../data/site.js";
+import { BIZ, DEPARTMENTS, DOCTORS, PACKAGES, POSTS, JOURNEY, TESTIMONIALS, GOOGLE_RATING, FAQ } from "../../data/site.js";
 import { $, $$, esc, tel, btn, icon, pad, deptCard, packageCard, postCard, secHead, accordion, media } from "../render.js";
 import { logoMark } from "../layout.js";
 import { pic, figure } from "../media.js";
@@ -114,7 +114,8 @@ const packages = () => `
 const testimonials = () => !TESTIMONIALS.length ? "" : `
 <section class="section"><div class="container">
   ${secHead("07", "Patients", `In their <em>own</em> words.`)}
-  <div class="grid g3">${TESTIMONIALS.map(t => `<figure class="tile" data-reveal><blockquote class="lead" style="margin:0 0 18px">“${esc(t.quote)}”</blockquote><figcaption class="label">${esc(t.name)} · ${esc(t.context)}</figcaption></figure>`).join("")}</div>
+  <p class="g-rating" data-reveal><span class="g-stars" aria-hidden="true">★★★★★</span> <b>${GOOGLE_RATING.score}</b> on Google · ${GOOGLE_RATING.count} reviews</p>
+  <div class="grid g3">${TESTIMONIALS.map(t => `<figure class="tile" data-reveal><div class="g-stars" role="img" aria-label="${t.rating} out of 5 stars">${"★".repeat(t.rating)}</div><blockquote class="lead" style="margin:6px 0 18px">“${esc(t.quote)}”</blockquote><figcaption class="label">${esc(t.name)} · ${esc(t.context)}</figcaption></figure>`).join("")}</div>
 </div></section>`;
 
 const insurers = () => `

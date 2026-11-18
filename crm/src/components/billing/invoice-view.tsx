@@ -20,6 +20,8 @@ import { RequestRefundDialog } from "@/components/billing/request-refund-dialog"
 import { formatCurrency, formatDate, formatDateTime, patientDisplayName } from "@/lib/format"
 import { billStatusLabels, billStatusColors, paymentMethodLabels, refundStatusColors, refundStatusLabels } from "@/lib/labels"
 import { CLINIC_INFO } from "@/lib/hospital-info"
+import { PdfActions } from "@/components/shared/pdf-actions"
+import { LetterheadHeader, LetterheadFooter } from "@/components/shared/letterhead"
 import { cancelBill, type getBill } from "@/actions/billing"
 
 type Bill = NonNullable<Awaited<ReturnType<typeof getBill>>>
@@ -58,17 +60,20 @@ export function InvoiceView({ bill }: { bill: Bill }) {
               Cancel Bill
             </Button>
           )}
+          <PdfActions kind="bill" id={bill.id} />
           <Button variant="outline" className="gap-1.5" onClick={() => window.print()}>
             <Printer className="h-3.5 w-3.5" />
-            Print
+            Print page
           </Button>
         </div>
       </div>
 
-      <Card>
+      <LetterheadHeader />
+      <LetterheadFooter />
+      <Card className="print:border-0 print:shadow-none print:ring-0 print:pb-[34mm]">
         <CardContent className="pt-6 space-y-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
+            <div className="print:hidden">
               <h1 className="text-lg font-semibold">{CLINIC_INFO.name}</h1>
               <p className="text-sm text-muted-foreground">{CLINIC_INFO.address}</p>
               <p className="text-sm text-muted-foreground">{CLINIC_INFO.phone} · {CLINIC_INFO.email}</p>

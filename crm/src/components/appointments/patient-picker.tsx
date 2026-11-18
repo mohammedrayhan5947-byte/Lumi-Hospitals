@@ -21,21 +21,38 @@ export function PatientPicker({
   const [results, setResults] = useState<PatientOption[]>([])
   const [selected, setSelected] = useState<PatientOption | null>(initial ?? null)
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [active, setActive] = useState(0)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Loads recent patients when the box is focused empty, and live matches while typing.
   useEffect(() => {
-    if (!query.trim()) return
+    if (!open) return
+    let cancelled = false
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
-      const { patients } = await getPatients({ query, pageSize: 8 })
-      setResults(
-        patients.map((p) => ({ id: p.id, name: patientDisplayName(p), uhid: p.uhid, phone: p.phone }))
-      )
-    }, 250)
+      setLoading(true)
+      try {
+        const { patients } = await getPatients({ query: query.trim(), pageSize: 8 })
+        if (cancelled) return
+        setResults(patients.map((p) => ({ id: p.id, name: patientDisplayName(p), uhid: p.uhid, phone: p.phone })))
+        setActive(0)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }, query.trim() ? 200 : 0)
     return () => {
+      cancelled = true
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [query])
+  }, [query, open])
+
+  const choose = (p: PatientOption) => {
+    setSelected(p)
+    onChange(p.id)
+    setOpen(false)
+    setQuery("")
+  }
 
   if (selected) {
     return (
@@ -59,7 +76,7 @@ export function PatientPicker({
   }
 
   return (
-    <div className="relative">
+    <div>
       <input type="hidden" value={value} readOnly />
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -67,31 +84,38 @@ export function PatientPicker({
           className="pl-9"
           placeholder="Search patient by name, UHID, or phone…"
           value={query}
+          autoComplete="off"
           onChange={(e) => {
             setQuery(e.target.value)
             setOpen(true)
           }}
           onFocus={() => setOpen(true)}
-          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") { e.preventDefault(); setActive((i) => Math.min(i + 1, results.length - 1)) }
+            else if (e.key === "ArrowUp") { e.preventDefault(); setActive((i) => Math.max(i - 1, 0)) }
+            else if (e.key === "Enter" && open && results[active]) { e.preventDefault(); choose(results[active]) }
+            else if (e.key === "Escape") setOpen(false)
+          }}
         />
       </div>
-      {open && query.trim() && results.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md max-h-64 overflow-y-auto">
-          {results.map((p) => (
+      {open && (
+        <div className="mt-1 max-h-64 overflow-y-auto rounded-md border bg-popover shadow-sm">
+          <p className="border-b px-3 py-1.5 text-xs text-muted-foreground">{query.trim() ? "Matching patients" : "Recent patients"}</p>
+          {loading && results.length === 0 && <p className="px-3 py-3 text-sm text-muted-foreground">Searching…</p>}
+          {!loading && results.length === 0 && <p className="px-3 py-3 text-sm text-muted-foreground">No patients found.</p>}
+          {results.map((p, i) => (
             <button
               key={p.id}
               type="button"
-              className="flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-muted"
-              onMouseDown={() => {
-                setSelected(p)
-                onChange(p.id)
-                setOpen(false)
-              }}
+              className={`flex w-full flex-col items-start px-3 py-2 text-left text-sm hover:bg-muted ${i === active ? "bg-muted" : ""}`}
+              onMouseEnter={() => setActive(i)}
+              onClick={() => choose(p)}
             >
               <span className="font-medium">{p.name}</span>
               <span className="text-xs text-muted-foreground">{p.uhid} · {p.phone}</span>
             </button>
           ))}
+          <button type="button" className="w-full border-t px-3 py-1.5 text-right text-xs text-muted-foreground hover:bg-muted" onClick={() => setOpen(false)}>Close</button>
         </div>
       )}
     </div>

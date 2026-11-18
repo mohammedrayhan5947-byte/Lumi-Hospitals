@@ -1,5 +1,6 @@
 "use client"
 
+import { PdfRowActions } from "@/components/shared/pdf-row-actions"
 import { useTransition } from "react"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -49,6 +50,7 @@ function RefundRow({ refund }: { refund: Refunds[number] }) {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <PdfRowActions kind="refund" id={refund.id} />
           <Badge variant="secondary" className={refundStatusColors[refund.status]}>{refundStatusLabels[refund.status]}</Badge>
           {refund.status === "PENDING" && (
             <>

@@ -1,3 +1,4 @@
+import { nextToken, formatToken } from "@/lib/tokens"
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { generateAppointmentCode, generateUHID } from "@/lib/sequence"
@@ -114,9 +115,11 @@ export async function POST(request: Request) {
       }
 
       const appointmentCode = await generateAppointmentCode(tx)
+      const token = await nextToken(tx, scheduledAt, doctor.id)
       const appointment = await tx.appointment.create({
         data: {
           appointmentCode,
+          ...token,
           patientId: patient.id,
           doctorId: doctor.id,
           serviceId: service.id,
@@ -127,7 +130,7 @@ export async function POST(request: Request) {
           source: "WEBSITE",
           reason: data.reason || null,
         },
-        select: { appointmentCode: true, scheduledAt: true },
+        select: { appointmentCode: true, scheduledAt: true, tokenNumber: true, tokenDate: true },
       })
 
       return { appointment, patientUhid: patient.uhid }
@@ -141,6 +144,8 @@ export async function POST(request: Request) {
         service: service.name,
         doctor: doctor.name,
         scheduledAt: result.appointment.scheduledAt.toISOString(),
+        token: formatToken(result.appointment.tokenNumber),
+        tokenNumber: result.appointment.tokenNumber,
       },
       201
     )

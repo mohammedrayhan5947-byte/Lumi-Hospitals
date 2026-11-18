@@ -41,6 +41,8 @@ model User {
   slug             String?   @unique
   consultationFee  Decimal?  @db.Decimal(10, 2)
   active           Boolean   @default(true)
+  /// Section scopes this account may open (see src/lib/permissions.ts). Empty = role defaults.
+  permissions      String[]  @default([])
   createdAt        DateTime  @default(now())
 
   sessions Session[]
@@ -197,6 +199,7 @@ model Patient {
   @@index([status])
   @@index([registrationStatus])
   @@index([firstName, lastName])
+  storedPdfs StoredPdf[]
 }
 
 model Tag {
@@ -333,6 +336,27 @@ enum DocumentCategory {
   OTHER
 }
 
+/// Generated PDF (prescription, invoice, receipt ...) kept inside the database itself.
+/// One row per (kind, entityId); regenerating replaces the bytes.
+model StoredPdf {
+  id          String   @id @default(cuid())
+  kind        String
+  entityId    String
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title       String
+  fileName    String
+  sizeBytes   Int
+  data        Bytes
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([kind, entityId])
+  @@index([patientId])
+  @@index([kind, updatedAt])
+}
+
 model Document {
   id           String           @id @default(cuid())
   patientId    String
@@ -461,6 +485,9 @@ model Appointment {
   type            AppointmentType   @default(IN_PERSON)
   status          AppointmentStatus @default(PENDING)
   source          AppointmentSource @default(CRM)
+  /// Per-day queue token (1, 2, 3 ...) for the appointment day, India time; tokenDate is "YYYY-MM-DD".
+  tokenNumber     Int?
+  tokenDate       String?
   reason          String?
   notes           String?
   cancelReason    String?
@@ -486,6 +513,7 @@ model Appointment {
   @@index([patientId])
   @@index([doctorId, scheduledAt])
   @@index([status])
+  @@index([tokenDate, tokenNumber])
 }
 
 enum WaitingListStatus {

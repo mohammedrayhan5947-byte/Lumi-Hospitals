@@ -1,13 +1,16 @@
 "use server"
 
+import { nextToken } from "@/lib/tokens"
 import { safeRevalidatePath as revalidatePath } from "@/lib/revalidate"
-import { addMinutes, isBefore, isToday, parse, startOfDay, endOfDay } from "date-fns"
+import { addMinutes, format, isBefore, isToday, parse, startOfDay, endOfDay } from "date-fns"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser, getCurrentUserOrNull, requireRole } from "@/lib/auth"
 import { generateAppointmentCode } from "@/lib/sequence"
 import { serializeDecimal } from "@/lib/serialize"
+import { patientDisplayName } from "@/lib/format"
 import { logAudit } from "@/lib/audit"
 import { NotificationService } from "@/lib/notifications"
+import { requireScheduleAccess } from "@/lib/schedule-access"
 import {
   bookAppointmentSchema,
   walkInSchema,
@@ -23,7 +26,19 @@ const ACTIVE_STATUSES = ["PENDING", "CONFIRMED", "ARRIVED", "IN_CONSULTATION"] a
 
 // ── Slot computation ───────────────────────────────────────────────────
 
+/** Effective busy window of a checked-in / running appointment: an overrunning consultation extends to "now". */
+function busyWindow(a: { scheduledAt: Date; durationMinutes: number; startedAt: Date | null; status: string }, now: Date) {
+  const schedEnd = addMinutes(a.scheduledAt, a.durationMinutes)
+  const start = a.status === "IN_CONSULTATION" && a.startedAt && a.startedAt < a.scheduledAt ? a.startedAt : a.scheduledAt
+  const end = schedEnd < now ? now : schedEnd
+  return { start, end }
+}
+
 export async function getAvailableSlots(doctorId: string, date: Date) {
+  const me = await getCurrentUser()
+  if (!["ADMIN", "RECEPTIONIST", "DOCTOR"].includes(me.role)) {
+    throw new Error("Forbidden: you do not have access to doctor schedules")
+  }
   const dayOfWeek = date.getDay()
   const dayStart = startOfDay(date)
   const dayEnd = endOfDay(date)
@@ -42,7 +57,7 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
         scheduledAt: { gte: dayStart, lte: dayEnd },
         status: { in: [...ACTIVE_STATUSES] },
       },
-      select: { scheduledAt: true },
+      select: { scheduledAt: true, durationMinutes: true, startedAt: true, status: true },
     }),
   ])
 
@@ -50,6 +65,10 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
 
   const bookedTimes = new Set(existingAppointments.map((a) => a.scheduledAt.getTime()))
   const now = new Date()
+  // Running (or checked-in and overdue) consultations occupy the doctor until max(scheduled end, now).
+  const busy = existingAppointments
+    .filter((a) => a.status === "IN_CONSULTATION" || a.status === "ARRIVED")
+    .map((a) => busyWindow(a, now))
   const slots: Date[] = []
 
   for (const availability of availabilities) {
@@ -57,7 +76,9 @@ export async function getAvailableSlots(doctorId: string, date: Date) {
     const end = parse(availability.endTime, "HH:mm", date)
     let cursor = start
     while (isBefore(cursor, end)) {
-      if (!bookedTimes.has(cursor.getTime()) && (!isToday(date) || isBefore(now, cursor))) {
+      const slotEnd = addMinutes(cursor, availability.slotDurationMinutes)
+      const overlapsBusy = busy.some((w) => cursor < w.end && slotEnd > w.start)
+      if (!bookedTimes.has(cursor.getTime()) && !overlapsBusy && (!isToday(date) || isBefore(now, cursor))) {
         slots.push(new Date(cursor))
       }
       cursor = addMinutes(cursor, availability.slotDurationMinutes)
@@ -86,11 +107,26 @@ export async function bookAppointment(input: BookAppointmentInput) {
     if (conflict) {
       throw new Error("This slot was just booked. Please choose another slot.")
     }
+    const running = await tx.appointment.findMany({
+      where: {
+        doctorId: data.doctorId,
+        status: { in: ["IN_CONSULTATION", "ARRIVED"] },
+        scheduledAt: { gte: startOfDay(data.scheduledAt), lte: endOfDay(data.scheduledAt) },
+      },
+      select: { scheduledAt: true, durationMinutes: true, startedAt: true, status: true },
+    })
+    const nowTs = new Date()
+    const slotEnd = addMinutes(data.scheduledAt, data.durationMinutes)
+    if (running.some((a) => { const w = busyWindow(a, nowTs); return data.scheduledAt < w.end && slotEnd > w.start })) {
+      throw new Error("The doctor is in an ongoing consultation at that time. Please choose a later slot.")
+    }
 
     const appointmentCode = await generateAppointmentCode(tx)
+    const token = await nextToken(tx, data.scheduledAt, data.doctorId)
     const created = await tx.appointment.create({
       data: {
         appointmentCode,
+        ...token,
         patientId: data.patientId,
         doctorId: data.doctorId,
         serviceId: data.serviceId || null,
@@ -150,9 +186,11 @@ export async function createWalkIn(input: WalkInInput) {
 
   const appointment = await prisma.$transaction(async (tx) => {
     const appointmentCode = await generateAppointmentCode(tx)
+    const token = await nextToken(tx, now, data.doctorId)
     const created = await tx.appointment.create({
       data: {
         appointmentCode,
+        ...token,
         patientId: data.patientId,
         doctorId: data.doctorId,
         scheduledAt: now,
@@ -261,9 +299,11 @@ export async function rescheduleAppointment(id: string, newScheduledAt: Date) {
       data: { status: "RESCHEDULED" },
     })
     const appointmentCode = await generateAppointmentCode(tx)
+    const token = await nextToken(tx, newScheduledAt, original.doctorId)
     const created = await tx.appointment.create({
       data: {
         appointmentCode,
+        ...token,
         patientId: original.patientId,
         doctorId: original.doctorId,
         serviceId: original.serviceId,
@@ -317,7 +357,12 @@ export async function updateAppointmentStatus(id: string, status: (typeof ACTIVE
   const data: Record<string, unknown> = { status }
   if (status === "ARRIVED") data.checkedInAt = now
   if (status === "IN_CONSULTATION") data.startedAt = now
-  if (status === "COMPLETED") data.completedAt = now
+  if (status === "COMPLETED") {
+    data.completedAt = now
+    // Always store an actual start so the real duration is known (fall back to check-in, then now).
+    const prev = await prisma.appointment.findUnique({ where: { id }, select: { startedAt: true, checkedInAt: true } })
+    if (prev && !prev.startedAt) data.startedAt = prev.checkedInAt ?? now
+  }
 
   const appointment = await prisma.$transaction(async (tx) => {
     const updated = await tx.appointment.update({
@@ -354,6 +399,7 @@ export async function updateAppointmentStatus(id: string, status: (typeof ACTIVE
 
   revalidatePath("/appointments")
   revalidatePath("/queue")
+  revalidatePath("/calendar")
   revalidatePath(`/patients/${appointment.patientId}`)
   revalidatePath("/dashboard")
   return appointment
@@ -424,9 +470,11 @@ export async function getAppointments(params: {
 }
 
 export async function getQueue() {
+  const me = await getCurrentUser()
   const today = new Date()
   const appointments = await prisma.appointment.findMany({
     where: {
+      ...(me.role === "DOCTOR" ? { doctorId: me.id } : {}),
       scheduledAt: { gte: startOfDay(today), lte: endOfDay(today) },
       status: { in: ["ARRIVED", "IN_CONSULTATION"] },
     },
@@ -435,7 +483,7 @@ export async function getQueue() {
       doctor: true,
       service: true,
     },
-    orderBy: { scheduledAt: "asc" },
+    orderBy: [{ tokenNumber: "asc" }, { scheduledAt: "asc" }],
   })
 
   return appointments.map((a) => ({
@@ -506,6 +554,7 @@ export async function getWaitingList(status?: "WAITING" | "NOTIFIED" | "CONVERTE
 
 export async function addAvailability(doctorId: string, input: AvailabilityInput) {
   await requireRole("ADMIN", "DOCTOR")
+  await requireScheduleAccess(doctorId)
   const data = availabilitySchema.parse(input)
   const slot = await prisma.doctorAvailability.create({
     data: {
@@ -516,19 +565,22 @@ export async function addAvailability(doctorId: string, input: AvailabilityInput
       slotDurationMinutes: data.slotDurationMinutes,
     },
   })
-  revalidatePath("/appointments/availability")
+  revalidatePath("/appointments/availability"); revalidatePath("/calendar")
   return slot
 }
 
 export async function deleteAvailability(id: string) {
   await requireRole("ADMIN", "DOCTOR")
+  const row = await prisma.doctorAvailability.findUniqueOrThrow({ where: { id }, select: { doctorId: true } })
+  await requireScheduleAccess(row.doctorId)
   await prisma.doctorAvailability.delete({ where: { id } })
-  revalidatePath("/appointments/availability")
+  revalidatePath("/appointments/availability"); revalidatePath("/calendar")
 }
 
 export async function getAllDoctorsWithAvailability() {
+  const me = await requireScheduleAccess()
   const doctors = await prisma.user.findMany({
-    where: { role: "DOCTOR", active: true },
+    where: { role: "DOCTOR", active: true, ...(me.role === "DOCTOR" ? { id: me.id } : {}) },
     include: {
       doctorAvailabilities: { orderBy: { dayOfWeek: "asc" } },
       doctorLeaves: { orderBy: { date: "desc" } },
@@ -542,12 +594,15 @@ export async function getAllDoctorsWithAvailability() {
   }))
 }
 
-export async function getAppointmentCountsForMonth(year: number, month: number) {
+export async function getAppointmentCountsForMonth(year: number, month: number, doctorId?: string) {
+  const me = await requireScheduleAccess(doctorId)
+  const scopedDoctorId = me.role === "DOCTOR" ? me.id : doctorId
   const start = new Date(year, month - 1, 1)
   const end = new Date(year, month, 0, 23, 59, 59)
 
   const appointments = await prisma.appointment.findMany({
     where: {
+      ...(scopedDoctorId ? { doctorId: scopedDoctorId } : {}),
       scheduledAt: { gte: start, lte: end },
       status: { in: [...ACTIVE_STATUSES, "COMPLETED"] },
     },
@@ -565,6 +620,7 @@ export async function getAppointmentCountsForMonth(year: number, month: number) 
 
 export async function setDoctorAvailability(doctorId: string, availabilities: AvailabilityInput[]) {
   await requireRole("ADMIN", "DOCTOR")
+  await requireScheduleAccess(doctorId)
   const parsed = availabilities.map((a) => availabilitySchema.parse(a))
 
   await prisma.$transaction(async (tx) => {
@@ -583,28 +639,54 @@ export async function setDoctorAvailability(doctorId: string, availabilities: Av
     }
   })
 
-  revalidatePath("/appointments/availability")
+  revalidatePath("/appointments/availability"); revalidatePath("/calendar")
 }
 
 export async function addDoctorLeave(doctorId: string, date: Date, reason?: string) {
   await requireRole("ADMIN", "DOCTOR")
+  await requireScheduleAccess(doctorId)
   const leave = await prisma.doctorLeave.create({
     data: { doctorId, date, reason },
   })
-  revalidatePath("/appointments/availability")
+  revalidatePath("/appointments/availability"); revalidatePath("/calendar")
   return leave
 }
 
 export async function deleteDoctorLeave(id: string) {
   await requireRole("ADMIN", "DOCTOR")
+  const row = await prisma.doctorLeave.findUniqueOrThrow({ where: { id }, select: { doctorId: true } })
+  await requireScheduleAccess(row.doctorId)
   await prisma.doctorLeave.delete({ where: { id } })
-  revalidatePath("/appointments/availability")
+  revalidatePath("/appointments/availability"); revalidatePath("/calendar")
 }
 
 export async function getDoctorSchedule(doctorId: string) {
+  await requireScheduleAccess(doctorId)
   const [availabilities, leaves] = await Promise.all([
     prisma.doctorAvailability.findMany({ where: { doctorId }, orderBy: { dayOfWeek: "asc" } }),
     prisma.doctorLeave.findMany({ where: { doctorId }, orderBy: { date: "desc" } }),
   ])
   return { availabilities, leaves }
+}
+
+/** Every token issued for today (any status), in token order: the day's full register. */
+export async function getTodayTokens() {
+  const me = await getCurrentUser()
+  const tokenDate = format(new Date(), "yyyy-MM-dd")
+  const rows = await prisma.appointment.findMany({
+    where: { tokenDate, ...(me.role === "DOCTOR" ? { doctorId: me.id } : {}) },
+    include: { patient: true, doctor: { select: { id: true, name: true } } },
+    orderBy: [{ doctor: { name: "asc" } }, { tokenNumber: "asc" }],
+  })
+  return rows.map((a) => ({
+    id: a.id,
+    tokenNumber: a.tokenNumber,
+    patientId: a.patientId,
+    patientName: patientDisplayName(a.patient),
+    uhid: a.patient.uhid,
+    doctorName: a.doctor.name,
+    scheduledAt: a.scheduledAt,
+    type: a.type,
+    status: a.status,
+  }))
 }

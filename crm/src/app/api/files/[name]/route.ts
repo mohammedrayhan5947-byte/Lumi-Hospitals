@@ -2,7 +2,8 @@ import { NextResponse } from "next/server"
 import { getCurrentUserOrNull } from "@/lib/auth"
 import { supabase, STORAGE_BUCKET } from "@/lib/supabase"
 
-// Patient documents live in a private bucket. Staff get a short-lived signed URL.
+// Uploaded patient files (photos, signatures, scans) live in a private bucket. Staff get a short-lived
+// signed URL. Generated PDFs are NOT here: they are stored in the database and served by /api/pdf/<kind>/<id>.
 export async function GET(_req: Request, { params }: { params: Promise<{ name: string }> }) {
   if (!(await getCurrentUserOrNull())) return new NextResponse("Unauthorized", { status: 401 })
   if (!supabase) return new NextResponse("Storage not configured", { status: 503 })

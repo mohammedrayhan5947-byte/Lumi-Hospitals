@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getCurrentUser } from "@/lib/auth"
 import { serializeDecimal } from "@/lib/serialize"
+import { markConsultationStarted, markConsultationCompleted } from "@/lib/consultation"
 import {
   vitalsSchema,
   diagnosisSchema,
@@ -45,6 +46,7 @@ export async function createEncounter(params: { patientId: string; doctorId: str
       },
     },
   })
+  await markConsultationStarted(params.appointmentId)
   revalidatePath(`/patients/${params.patientId}`)
   return encounter
 }
@@ -124,6 +126,8 @@ export async function signEncounter(encounterId: string) {
     }),
   ])
 
+  // Finalising the encounter ends the consultation: store actual start/end on the appointment.
+  await markConsultationCompleted(encounter.appointmentId)
   revalidatePath(`/patients/${encounter.patientId}/encounters/${encounterId}`)
   revalidatePath(`/patients/${encounter.patientId}`)
   return { doctorId: user.id }
@@ -170,7 +174,7 @@ export async function deleteDiagnosis(encounterId: string, id: string) {
 // ── Clinical note (SOAP) — autosave with version history ───────────────
 
 export async function autosaveClinicalNote(encounterId: string, input: ClinicalNoteInput) {
-  await assertDraft(encounterId)
+  const encounter = await assertDraft(encounterId)
   const data = clinicalNoteSchema.parse(input)
 
   const note = await prisma.clinicalNote.findUniqueOrThrow({ where: { encounterId } })
@@ -186,6 +190,7 @@ export async function autosaveClinicalNote(encounterId: string, input: ClinicalN
     }),
   ])
 
+  await markConsultationStarted(encounter.appointmentId)
   return { savedAt: updated.updatedAt, version: updated.version }
 }
 
@@ -197,7 +202,7 @@ export async function createEncounterPrescription(
   doctorId: string,
   input: PrescriptionInput
 ) {
-  await assertDraft(encounterId)
+  const encounter = await assertDraft(encounterId)
   const data = prescriptionSchema.parse(input)
   const prescription = await prisma.prescription.create({
     data: {
@@ -210,6 +215,7 @@ export async function createEncounterPrescription(
     },
     include: { items: true },
   })
+  await markConsultationStarted(encounter.appointmentId)
   revalidatePath(`/patients/${patientId}/encounters/${encounterId}`)
   return prescription
 }

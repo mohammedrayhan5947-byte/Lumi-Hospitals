@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { BarBreakdown } from "@/components/finance/bar-breakdown"
 import { formatCurrency, formatDate } from "@/lib/format"
 import { paymentMethodLabels, expenseCategoryLabels } from "@/lib/labels"
+import { PrintButton } from "@/components/shared/print-button"
 
 export default async function FinancialReportsPage({
   searchParams,
@@ -31,6 +32,7 @@ export default async function FinancialReportsPage({
         <div className="flex items-center gap-2">
           <ReportDateRange from={from} to={to} />
           <ExportReportButton report={report} from={from} to={to} />
+          <PrintButton />
         </div>
       </div>
 

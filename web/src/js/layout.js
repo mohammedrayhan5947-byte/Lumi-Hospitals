@@ -114,10 +114,11 @@ function footer() {
         <div><h4>Visit</h4><ul class="f-contact">
           <li>${icon("pin")}<span>${esc(BIZ.address)}</span></li>
           <li>${icon("phone")}<a href="${tel(BIZ.phone)}">${esc(BIZ.phone)}</a></li>
+          <li>${icon("phone")}<a href="${tel(BIZ.mobile)}">${esc(BIZ.mobile)}</a></li>
           <li>${icon("mail")}<a href="mailto:${BIZ.email}">${esc(BIZ.email)}</a></li>
           <li>${icon("clock")}<span>${esc(BIZ.hours.opd)}<br>${esc(BIZ.hours.sunday)}</span></li></ul></div>
       </div>
-      <div class="footer-word" aria-hidden="true">${[...BIZ.short].map(c => `<span>${c}</span>`).join("")}</div>
+      <div class="footer-word" aria-hidden="true">${[..."LUMI HOSPITALS"].map(c => `<span>${c === " " ? "&nbsp;" : c}</span>`).join("")}</div>
     </div>
     <div class="footer-bottom container"><span>© ${new Date().getFullYear()} ${esc(BIZ.name)}</span>
       <nav class="legal-nav" aria-label="Legal"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/disclaimer.html">Disclaimer</a><a href="/patient-rights.html">Patient rights</a><a href="/grievance.html">Grievance</a><button type="button" class="consent-open" data-consent-open>Privacy choices</button></nav>

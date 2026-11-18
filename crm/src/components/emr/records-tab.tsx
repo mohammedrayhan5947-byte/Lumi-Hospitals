@@ -1,5 +1,6 @@
 "use client"
 
+import { SectionPdfActions } from "@/components/shared/pdf-row-actions"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { Plus, Trash2 } from "lucide-react"
@@ -17,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { EntityDialog } from "@/components/shared/entity-dialog"
+import { PdfActions } from "@/components/shared/pdf-actions"
 import { DeleteButton } from "@/components/shared/delete-button"
 import { formatDate } from "@/lib/format"
 import { createClinicalReport, deleteClinicalReport, type getClinicalReports } from "@/actions/reports"
@@ -45,6 +47,12 @@ export function RecordsTab({
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
+      {(reports.length > 0 || records.certificates.length > 0) && (
+        <div className="flex flex-wrap items-center gap-2 lg:col-span-2 print:hidden">
+          {reports.length > 0 && <SectionPdfActions kind="report" label="all reports" filters={{ patientId }} />}
+          {records.certificates.length > 0 && <SectionPdfActions kind="certificate" label="all certificates" filters={{ patientId }} />}
+        </div>
+      )}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Lab Reports</CardTitle>
@@ -113,6 +121,7 @@ export function RecordsTab({
                 <SignBadge signedAt={c.signedAt} onSign={() => signCertificate(c.id, patientId)} />
               </div>
               <p className="text-xs text-muted-foreground mt-1">{c.type} · Dr. {c.doctor.name}</p>
+              <PdfActions kind="certificate" id={c.id} size="xs" className="mt-2" />
             </div>
           ))}
         </CardContent>
@@ -161,6 +170,7 @@ function ReportRow({ patientId, report }: { patientId: string; report: Reports[n
         </div>
       </div>
       {report.impression && <p className="text-xs mt-2">{report.impression}</p>}
+      <PdfActions kind="report" id={report.id} size="xs" className="mt-2" />
       {report.labResults.length > 0 && (
         <div className="mt-2 space-y-1">
           {report.labResults.map((item) => (

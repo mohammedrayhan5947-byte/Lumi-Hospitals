@@ -1,12 +1,14 @@
 # Lumi Hospital
 
-> Lumi Hospital is a multi-speciality hospital in Bengaluru, Karnataka, India, with 10 specialities, 12 listed consultants, a 24/7 emergency room, ICU, NICU, laboratory and pharmacy. Patients can book consultations and preventive health check-ups online or on WhatsApp.
+> Lumi Hospital is a multi-speciality hospital in Bengaluru, Karnataka, India, with 12 specialities, 12 listed consultants, a 24/7 emergency room, ICU, NICU, laboratory and pharmacy. Patients can book consultations and preventive health check-ups online or on WhatsApp.
 
 A multi-speciality hospital where senior specialists, modern diagnostics and genuinely kind people work as one team, around the clock. Cashless insurance is accepted with insurers and TPAs including Star Health, HDFC ERGO, ICICI Lombard, Niva Bupa, Care Health, Aditya Birla, Bajaj Allianz, Tata AIG, Medi Assist (TPA), CGHS, ECHS.
 
 ## Contact
-- Location: Bengaluru, Karnataka, India
-- Email: care@lumihospital.in
+- Address: Ilyas Nagar, Banashankari, Bengaluru, Karnataka 560111
+- Reception: 080 2990 1022
+- 24/7 emergency & ambulance: 080 2990 1022
+- Email: lumihospitals@gmail.com
 - OPD hours: Mon–Sat · 8:00 AM – 8:00 PM; Sun · 9:00 AM – 1:00 PM
 - Emergency, ICU, pharmacy and laboratory: open 24 hours
 - Ward visiting hours: 11:00 AM – 1:00 PM · 5:00 PM – 7:00 PM
@@ -83,6 +85,20 @@ Services: Endoscopy & colonoscopy; ERCP; Liver clinic; Acid reflux & IBS clinic;
 Conditions treated: Acidity & GERD; Fatty liver; Hepatitis; Gallstones; IBS; Ulcers.
 Specialists: Dr. Nikhil Varma (Consultant Gastroenterologist).
 Recommended health checks: Executive.
+
+### Dental Care
+URL: https://www.lumihospital.in/specialities/dental.html
+Gentle dental care for the whole family, from routine check-ups and cleaning to root canals, extractions and restorative work.
+Services: Dental check-up & cleaning; Fillings & root canal; Extractions; Crowns & bridges; Paediatric dentistry; Dental X-ray.
+Conditions treated: Toothache; Cavities; Gum disease; Sensitivity; Missing teeth; Bad breath.
+Specialists: call reception to book the consultant on duty.
+
+### Cancer Care
+URL: https://www.lumihospital.in/specialities/oncology.html
+Early screening, accurate diagnosis and coordinated cancer care, with surgery, day-care chemotherapy and supportive care under one roof.
+Services: Cancer screening; Biopsy & diagnosis; Day-care chemotherapy; Oncology surgery; Palliative & supportive care; Counselling.
+Conditions treated: Breast cancer; Oral cancer; Cervical cancer; Lump evaluation; Follow-up care; Second opinion.
+Specialists: call reception to book the consultant on duty.
 
 ### Diagnostics & Imaging
 URL: https://www.lumihospital.in/specialities/diagnostics.html

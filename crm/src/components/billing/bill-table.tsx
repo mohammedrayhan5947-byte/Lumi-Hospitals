@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PdfRowActions } from "@/components/shared/pdf-row-actions"
 import { Badge } from "@/components/ui/badge"
 import { billStatusLabels, billStatusColors } from "@/lib/labels"
 import { formatCurrency, formatDate, patientDisplayName } from "@/lib/format"
@@ -30,6 +31,7 @@ export function BillTable({ bills }: { bills: Bills }) {
           <TableHead>Net Amount</TableHead>
           <TableHead>Balance Due</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead className="text-right">Invoice</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -56,6 +58,7 @@ export function BillTable({ bills }: { bills: Bills }) {
                 {billStatusLabels[bill.status]}
               </Badge>
             </TableCell>
+            <TableCell className="text-right"><PdfRowActions kind="bill" id={bill.id} /></TableCell>
           </TableRow>
         ))}
       </TableBody>

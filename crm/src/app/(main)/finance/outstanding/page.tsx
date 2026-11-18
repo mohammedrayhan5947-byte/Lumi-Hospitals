@@ -11,15 +11,19 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency, formatDate, patientDisplayName } from "@/lib/format"
+import { PrintButton } from "@/components/shared/print-button"
 
 export default async function OutstandingDuesPage() {
   const { rows, buckets, totalOutstanding } = await getOutstandingDues()
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
         <h1 className="text-2xl font-semibold tracking-tight">Outstanding Dues</h1>
         <p className="text-sm text-muted-foreground">{formatCurrency(totalOutstanding)} total outstanding across {rows.length} bill{rows.length === 1 ? "" : "s"}</p>
+      </div>
+        <PrintButton />
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

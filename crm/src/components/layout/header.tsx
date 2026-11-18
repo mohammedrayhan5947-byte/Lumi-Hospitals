@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Search, Plus, Menu } from "lucide-react"
+import { Search, Plus, Menu, Printer } from "lucide-react"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -21,7 +21,7 @@ import { NavPanel } from "@/components/layout/sidebar-nav"
 import { initials } from "@/lib/format"
 import { logout } from "@/actions/auth"
 
-export function Header({ user }: { user: { name: string; role: string } }) {
+export function Header({ user }: { user: { name: string; role: string; permissions?: string[] } }) {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [menuOpen, setMenuOpen] = useState(false)
@@ -34,7 +34,7 @@ export function Header({ user }: { user: { name: string; role: string } }) {
   }
 
   return (
-    <header className="flex h-16 items-center gap-2 border-b bg-background px-3 sm:gap-4 sm:px-4 lg:px-6">
+    <header className="print:hidden flex h-16 items-center gap-2 border-b bg-background px-3 sm:gap-4 sm:px-4 lg:px-6">
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <button
           type="button"
@@ -46,7 +46,7 @@ export function Header({ user }: { user: { name: string; role: string } }) {
         </button>
         <SheetContent side="left" className="w-72 max-w-[85vw] gap-0 p-0 lg:hidden">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <NavPanel role={user.role} onNavigate={() => setMenuOpen(false)} />
+          <NavPanel role={user.role} permissions={user.permissions} onNavigate={() => setMenuOpen(false)} />
         </SheetContent>
       </Sheet>
       <form onSubmit={handleSearch} className="flex-1 max-w-xl">
@@ -60,6 +60,19 @@ export function Header({ user }: { user: { name: string; role: string } }) {
           />
         </div>
       </form>
+
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        className="gap-1.5"
+        aria-label="Print this page"
+        title="Print this page"
+        onClick={() => window.print()}
+      >
+        <Printer className="h-4 w-4" />
+        <span className="hidden md:inline">Print</span>
+      </Button>
 
       <Button
         size="sm"

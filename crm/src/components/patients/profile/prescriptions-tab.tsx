@@ -1,10 +1,10 @@
 "use client"
 
-import { CLINIC_INFO } from "@/lib/hospital-info"
-import { Pill, Printer, Stethoscope, Clock, Calendar, User, FileText } from "lucide-react"
+import { SectionPdfActions } from "@/components/shared/pdf-row-actions"
+import { PdfActions } from "@/components/shared/pdf-actions"
+import { Pill, Stethoscope, Clock, Calendar, User, FileText } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { formatDateTime, formatDate } from "@/lib/format"
 import type { getPatientPrescriptions } from "@/actions/patients"
 
@@ -19,109 +19,6 @@ export function PrescriptionsTab({
   uhid: string
   prescriptions: Prescriptions
 }) {
-  function handlePrint(prescription: Prescriptions[number]) {
-    const printWindow = window.open("", "_blank")
-    if (!printWindow) return
-
-    const itemsHtml = prescription.items
-      .map(
-        (item, idx) => `
-        <tr style="border-bottom: 1px solid #e5e7eb;">
-          <td style="padding: 10px 8px; font-weight: 600;">${idx + 1}. ${item.medicineName}</td>
-          <td style="padding: 10px 8px;">${item.dosage || "—"}</td>
-          <td style="padding: 10px 8px;">${item.frequency || "—"}</td>
-          <td style="padding: 10px 8px;">${item.duration || "—"}</td>
-          <td style="padding: 10px 8px; color: #4b5563; font-style: italic;">${item.instructions || "—"}</td>
-        </tr>
-      `
-      )
-      .join("")
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Prescription — ${patientName} (${uhid})</title>
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; color: #1f2937; }
-            .header { border-bottom: 2px solid #0f766e; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
-            .clinic-name { font-size: 24px; font-weight: bold; color: #0f766e; }
-            .clinic-info { font-size: 12px; color: #6b7280; line-height: 1.4; }
-            .patient-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; }
-            .section-title { font-size: 16px; font-weight: bold; color: #0f766e; margin-top: 20px; margin-bottom: 10px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-            th { text-align: left; background: #f3f4f6; padding: 10px 8px; border-bottom: 2px solid #d1d5db; font-size: 12px; text-transform: uppercase; color: #4b5563; }
-            .footer { margin-top: 60px; border-top: 1px solid #e5e7eb; padding-top: 20px; display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
-            .doctor-sig { text-align: right; }
-            @media print { body { margin: 20px; } button { display: none; } }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div>
-              <div class="clinic-name">${CLINIC_INFO.name.toUpperCase()}</div>
-              <div class="clinic-info">
-                ${CLINIC_INFO.address}<br/>
-                Phone: ${CLINIC_INFO.phone} | Email: ${CLINIC_INFO.email}
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-size: 18px; font-weight: bold; color: #0f766e;">Rx PRESCRIPTION</div>
-              <div style="font-size: 13px; color: #6b7280;">Date: ${formatDate(prescription.issuedAt || new Date())}</div>
-            </div>
-          </div>
-
-          <div class="patient-box">
-            <div>
-              <strong>Patient:</strong> ${patientName} &nbsp;|&nbsp; <strong>UHID:</strong> ${uhid}
-            </div>
-            <div>
-              <strong>Doctor:</strong> Dr. ${prescription.doctor?.name || "Consultant"}
-            </div>
-          </div>
-
-          ${prescription.diagnosis ? `<div style="margin-bottom: 15px; font-size: 14px;"><strong>Diagnosis:</strong> ${prescription.diagnosis}</div>` : ""}
-
-          <div class="section-title">Rx Prescribed Medications</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Medicine / Strength</th>
-                <th>Dosage</th>
-                <th>Frequency</th>
-                <th>Duration</th>
-                <th>Special Instructions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemsHtml}
-            </tbody>
-          </table>
-
-          ${
-            prescription.notes
-              ? `<div style="margin-top: 25px; font-size: 14px; background: #fafafa; padding: 12px; border-left: 3px solid #0f766e;">
-                  <strong>Doctor's Notes & Advice:</strong><br/>
-                  ${prescription.notes}
-                </div>`
-              : ""
-          }
-
-          <div class="footer">
-            <div>Generated by ${CLINIC_INFO.name} Electronic Medical Record System</div>
-            <div class="doctor-sig">
-              <br/><br/>
-              _____________________________________<br/>
-              <strong>Dr. ${prescription.doctor?.name || "Consulting Physician"}</strong><br/>
-              ${prescription.doctor?.specialization || `${CLINIC_INFO.name} Medical Staff`}
-            </div>
-          </div>
-          <script>window.print();</script>
-        </body>
-      </html>
-    `)
-    printWindow.document.close()
-  }
 
   return (
     <div className="space-y-4">
@@ -132,6 +29,7 @@ export function PrescriptionsTab({
             All medications and prescriptions written across consultations ({prescriptions.length} total).
           </p>
         </div>
+        {prescriptions.length > 0 && <SectionPdfActions kind="prescription" label="all" filters={{ patientId: prescriptions[0].patientId }} />}
       </div>
 
       {prescriptions.length === 0 ? (
@@ -174,15 +72,7 @@ export function PrescriptionsTab({
                     </div>
                   </div>
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs self-start sm:self-auto"
-                    onClick={() => handlePrint(prescription)}
-                  >
-                    <Printer className="h-3.5 w-3.5" />
-                    Print Rx
-                  </Button>
+                  <PdfActions kind="prescription" id={prescription.id} className="self-start sm:self-auto" />
                 </div>
 
                 {prescription.diagnosis && (

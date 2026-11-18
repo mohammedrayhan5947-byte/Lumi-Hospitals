@@ -17,7 +17,7 @@ export const A11Y = [
   { id: "links", name: "Underline links", hint: "Make every link easy to spot" }
 ];
 
-const defaults = { mode: "auto", accent: "auto", season: "auto", a11y: [], seasonDismissed: "" };
+const defaults = { mode: "auto", accent: "season", season: "winter", a11y: [], seasonDismissed: "" };
 let state = { ...defaults };
 try { state = { ...defaults, ...JSON.parse(localStorage.getItem(KEY) || "{}") }; } catch { /* private mode */ }
 
